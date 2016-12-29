@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pages on Holywise Tech Notes</title>
+    <link>https://holywise.github.io/page/index.xml</link>
+    <description>Recent content in Pages on Holywise Tech Notes</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-JP</language>
+    <lastBuildDate>Thu, 29 Dec 2016 01:55:12 +0900</lastBuildDate>
+    <atom:link href="https://holywise.github.io/page/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>About</title>
+      <link>https://holywise.github.io/about/</link>
+      <pubDate>Thu, 29 Dec 2016 01:55:12 +0900</pubDate>
+      
+      <guid>https://holywise.github.io/about/</guid>
+      <description>
+
+&lt;h2 id=&#34;what-is-this-site-このサイトについて&#34;&gt;What is this site? / このサイトについて&lt;/h2&gt;
+
+&lt;p&gt;ここは holywise が徒然なるままに、主にプログラミングやシステム設計等に関するトピックについて書き綴ったメモあるいは雑記を投稿する場所です。&lt;/p&gt;
+
+&lt;p&gt;なお記載する内容についてはなるべく正確であることを心がけますが、保証の限りではありません。&lt;/p&gt;
+
+&lt;p&gt;These pages and posts are written by me holywise, a senior software develpoer / systems architect,
+and they may contain topics about computer programming, software design, and so on.&lt;/p&gt;
+
+&lt;p&gt;I would like to keep their correctness in my mind but there is no guarantee.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

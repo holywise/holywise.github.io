@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.18" />
+    <title>HUGOで静的ページサイトを構築する (2/3)</title>
+    
+    
+    
+    <meta name="description" content="HUGOで静的ページを作成して github pages で公開するまでの手順" />
+    <meta name="keywords" content='Hugo,Windows,GitHub' />
+    
+        <meta name="author" content="holywise" />
+    
+    
+    <link href="" rel="alternate" type="application/rss+xml" title="Holywise Tech Notes" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/highlightjs-themes/darcula.css" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/phlat.css" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/custom.css" />
+    
+        
+    
+</head>
+
+    <body>
+        <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Holywise Tech Notes</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            Home
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/about/">
+                            About
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+        <div id="top" class="container">
+            <div class="row" id="content-main">
+                <div class="col-md-8">
+                    <div class="row">
+    <div class="col-md-12 content-card shadow-card">
+        <h1>HUGOで静的ページサイトを構築する (2/3)</h1>
+        
+            
+            <ul class="list-inline meta">
+                <li><i class="fa fa-calendar"></i>2016-12-29</li>
+                <li><i class="fa fa-user"></i>holywise</li>
+                
+                    
+                    <li><i class="fa fa-folder"></i><a href="https://holywise.github.io/categories/%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89">環境構築</a></li>
+                
+            </ul>
+        
+        
+    <ul class="list-inline share" style="margin-top: 15px; margin-left: 0px">
+        <li class="facebook-share"><a target="_blank" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fholywise.github.io%2f2016%2f12%2fhow_to_add_pages_hugo_site%2f" rel="nofollow" title="Facebook"><i class="fa fa-facebook fa-lg"></i></a></li>
+        <li class="googleplus-share"><a target="_blank" href="https://plus.google.com/share?url=https%3a%2f%2fholywise.github.io%2f2016%2f12%2fhow_to_add_pages_hugo_site%2f" rel="nofollow" title="Google+"><i class="fa fa-google-plus fa-lg"></i></a></li>
+        <li class="twitter-share"><a target="_blank" href="https://twitter.com/share?url=https%3a%2f%2fholywise.github.io%2f2016%2f12%2fhow_to_add_pages_hugo_site%2f&amp;text=HUGO%e3%81%a7%e9%9d%99%e7%9a%84%e3%83%9a%e3%83%bc%e3%82%b8%e3%82%b5%e3%82%a4%e3%83%88%e3%82%92%e6%a7%8b%e7%af%89%e3%81%99%e3%82%8b%20%282%2f3%29" rel="nofollow" title="Twitter"><i class="fa fa-twitter fa-lg"></i></a></li>
+        <li class="reddit-share"><a target="_blank" href="http://reddit.com/submit?url=https%3a%2f%2fholywise.github.io%2f2016%2f12%2fhow_to_add_pages_hugo_site%2f&amp;title=HUGO%e3%81%a7%e9%9d%99%e7%9a%84%e3%83%9a%e3%83%bc%e3%82%b8%e3%82%b5%e3%82%a4%e3%83%88%e3%82%92%e6%a7%8b%e7%af%89%e3%81%99%e3%82%8b%20%282%2f3%29" rel="nofollow" title="reddit"><i class="fa fa-reddit fa-lg"></i></a></li>
+        <li class="linkedin-share"><a target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fholywise.github.io%2f2016%2f12%2fhow_to_add_pages_hugo_site%2f" rel="nofollow" title="LinkedIn"><i class="fa fa-linkedin fa-lg"></i></a></li>
+        <li class="hatena-share"><a target="_blank" href="http://b.hatena.ne.jp/add?mode=confirm&amp;url=https%3a%2f%2fholywise.github.io%2f2016%2f12%2fhow_to_add_pages_hugo_site%2f&amp;title=HUGO%e3%81%a7%e9%9d%99%e7%9a%84%e3%83%9a%e3%83%bc%e3%82%b8%e3%82%b5%e3%82%a4%e3%83%88%e3%82%92%e6%a7%8b%e7%af%89%e3%81%99%e3%82%8b%20%282%2f3%29" rel="nofollow" title="はてなブックマーク"><i class="fa fa-hatena fa-lg"></i></a></li>
+    </ul>
+
+
+        <h2 id="構築作業の全景">構築作業の全景</h2>
+
+<p>この一連のポストでは以下の手順で進めていくことになります。</p>
+
+<ol class="task-list">
+<li><input type="checkbox" checked disabled class="task-list-item"> HUGOをインストールする</li>
+<li><input type="checkbox" checked disabled class="task-list-item"> プロジェクト用の作業ディレクトリを作る</li>
+<li><input type="checkbox" checked disabled class="task-list-item"> 作業ディレクトリに各種の初期設定を行う</li>
+<li><input type="checkbox" disabled class="task-list-item"> <strong>作業ディレクトリにページデータを作成する</strong> (←)</li>
+<li><input type="checkbox" disabled class="task-list-item"> github page に連携する</li>
+</ol>
+
+<p><a href="/2016/12/how_to_setup_hugo_site/">前回のポスト</a>で3番目の手順まで終えました。
+当ポストでは4番目の手順を示します。</p>
+
+<p></p>
+
+<h2 id="作業ディレクトリにページデータを作成する">作業ディレクトリにページデータを作成する</h2>
+
+<p>前回のポストまでの手順で下記のような作業ディレクトリ構造ができあがっています。</p>
+
+<pre><code class="language-dos">D:.
+│  config.toml    # サイト設定ファイル
+│
+├─archetypes      # 新規ページ原稿のひな形テンプレートを置くところ
+├─content         # ページ原稿を置くところ
+├─data            # Hugo制御用の設定ファイルを置くところ
+├─layouts         # 生成されるサイトを構成する各htmlテンプレート
+├─static          # cssやjavascript等の静的素材を置くところ
+└─themes          # テーマファイル群を置くところ
+</code></pre>
+
+<p><code>/layouts</code> や <code>/static</code> は主にインストールしたテーマをカスタマイズしたいときに使用します。
+<code>/content</code> の下がユーザが markdown 形式等で作成していくページ原稿の置き場となります。</p>
+
+<p>ページ原稿データはコマンドラインから <kbd>hugo new</kbd> コマンドを使用して作成しますが、
+このとき作成されるページ原稿のひな形として <code>/archetypes</code> 配下に置いたファイルが使用されます。
+ただし今回導入したテーマ
+<a href="http://themes.gohugo.io/hugo-phlat-theme/">Hugo Theme: Phlat Theme</a>
+は、テーマの中に <code>archetypes/default.md</code> を持っているため、
+ユーザが自力で <code>/archetypes</code> の下にファイルを作らなくてもそちらが参照されます。</p>
+
+<h3 id="原稿データを新規に追加する">原稿データを新規に追加する</h3>
+
+<p><kbd>hugo new</kbd>コマンド実行は作業ディレクトリのルートで行ってください。
+ここでは引数の例として <code>post/sample01.md</code> と <code>page/about.md</code> を指定します。</p>
+
+<pre><code class="language-dos">D:\workspace\hugo\youname.github.io&gt; hugo new post/sample01.md
+D:\workspace\hugo\youname.github.io\content\post\sample01.md created
+D:\workspace\hugo\youname.github.io&gt; hugo new page/about.md
+D:\workspace\hugo\youname.github.io\content\page\about.md created
+</code></pre>
+
+<p><code>/contens</code> の下に新たに <code>post</code> ディレクトリが作られ、その下に <code>sample01.md</code> が作成されたことがわかります。
+同様に <code>page</code> ディレクトリとその下に <code>about.md</code> が作成されています。</p>
+
+<pre><code class="language-dos">D:.
+│  config.toml
+│
+├─archetypes
+├─content
+│  ├─page                # pageセクション
+│  │      about.md
+│  │
+│  └─post                # postセクション
+│         sample01.md
+│
+├─data
+</code></pre>
+
+<p><code>/content</code> 直下のディレクトリは「セクション」と呼ばれ、特別な意味があります。
+どのようなセクション名が使えるかは使用するテーマに依存します。
+今回採用した Phlat テーマでは <code>post</code> および <code>page</code> の２つのセクションを持つことができるようになっています。</p>
+
+<p>Phlat テーマの場合は <code>post</code> セクションの下がブログのいわゆる「エントリー」に該当し、
+<code>page</code> セクションの下は「このサイトについて」などの固定ページに該当します。</p>
+
+<p>セクション名ディレクトリの下の原稿データファイル名は自由に付けられます。
+何も設定しなければ基本的にここでの原稿データファイル名（拡張子を除く）が公開するサイトのURLに使われます。</p>
+
+<h3 id="原稿データを編集する">原稿データを編集する</h3>
+
+<p><code>page/about.md</code> は次のような内容になっているはずです。</p>
+
+<pre><code class="language-markdown">+++
+date = &quot;2016-12-26T21:10:55+09:00&quot;
+title = &quot;about&quot;
+draft = true
+
++++
+</code></pre>
+
+<p><code>+++</code> で挟まれた行はフロントマターと言って、そのページの作成日付等のメタ情報をTOML形式で記述します。
+<code>date</code> の内容は自動生成されており <kbd>hugo new</kbd> を実行した日時になっています。</p>
+
+<p>ページ本文は2回目に出現する <code>+++</code> 以降に記述していきます。
+以下にサンプルを示します。</p>
+
+<pre><code class="language-markdown">+++
+date = &quot;2016-12-26T21:10:55+09:00&quot;
+title = &quot;about&quot;
+draft = true
+isCJKLanguage = true
+
++++
+
+## このサイトについて
+
+このサイトはサンプルです。
+</code></pre>
+
+<p>同様に <code>post/sample01.md</code> の方も編集します。</p>
+
+<pre><code class="language-markdown">+++
+date = &quot;2016-12-26T21:09:51+09:00&quot;
+title = &quot;sample01&quot;
+draft = true
+isCJKLanguage = true
+categories = [&quot;サンプル&quot;]
+
++++
+
+## サンプルポスト
+
+今日はこんなことがありました。
+</code></pre>
+
+<p>なおフロントマターに <code>isCJKLanguage = true</code> を追加しています。
+これは本文が日本語（or 中国語 or 韓国語）であることを明示するものです。
+必須ではありませんが、日本語で原稿を書くなら付けておくと良いでしょう。</p>
+
+<h3 id="ローカル環境でプレビューを見る">ローカル環境でプレビューを見る</h3>
+
+<p>Hugo はそれ自身でウェブサーバーとして振る舞うことができます。
+作業ディレクトリのルートで <kbd>hugo server</kbd> コマンドを実行することで、
+ローカルホストにブラウザでアクセスしてプレビューを見ることができます。</p>
+
+<pre><code class="language-dos">D:\workspace\hugo\youname.github.io&gt; hugo server -D
+Started building sites ...
+Built site for language ja:
+2 of 2 drafts rendered
+0 future content
+0 expired content
+2 regular pages created
+5 other pages created
+0 non-page files copied
+3 paginator pages created
+1 categories created
+0 tags created
+total in 32 ms
+Watching for changes in D:\workspace\hugo\yourname.github.io\{data,content,layouts,static,themes}
+Serving pages from memory
+Web Server is available at http://localhost:1313/ (bind address 127.0.0.1)
+Press Ctrl+C to stop
+
+</code></pre>
+
+<p><code>-D</code> オプションを付けたのはフロントマターで <code>draft = true</code> となっているページも出力対象とするためです。</p>
+
+<p>上記のように特にエラーがなく <code>Web Server is available</code> と表示されていれば</p>
+
+<p><a href="http://localhost:1313/">http://localhost:1313/</a></p>
+
+<p>にブラウザでアクセスしてみてください。
+正常に動いていれば</p>
+
+
+<figure >
+    
+        <img src="/image/hugo_test_sample.png" alt="HUGO Sample" />
+    
+    
+    <figcaption>
+        <p>
+        Hugoサンプル表示
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<p>のように表示されるはずです。</p>
+
+<p>また　Hugo は <kbd>hugo server</kbd> で実行したとき、ライブリロード機能が有効になります。
+ライブリロード機能とは、サーバー機能が実行中にページデータ等を編集すると即座に表示中のページがリロードされて、
+編集内容が自動的にプレビューに反映されるものです。Hugo サーバーを実行したまま <code>post/sample01.md</code> を編集してみてください。</p>
+
+<p>Hugo サーバーを終了するには <kbd><kbd>Ctrl</kbd>+<kbd>C</kbd></kbd> を押してください。</p>
+
+<p><a href="No page found with path or logical name "howto_push_hugo_site.md".
+">HUGOで静的ページサイトを構築する (<sup>3</sup>&frasl;<sub>3</sub>)</a> に続きます。</p>
+        
+    <ul class="list-inline tags" style="margin-top: 15px; margin-left: 0px">
+        
+            <li style=""><a href="https://holywise.github.io/tags/hugo">Hugo</a></li>
+        
+            <li style=""><a href="https://holywise.github.io/tags/windows">Windows</a></li>
+        
+            <li style=""><a href="https://holywise.github.io/tags/github">GitHub</a></li>
+        
+    </ul>
+
+
+    </div>
+</div>
+
+                    
+    
+
+
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+    <div class="col-md-11 col-md-offset-1 card">
+        <h5>Search</h5>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form">
+            <div class="input-group">
+                <input class="form-control" type="search" name="q" />
+                <span class="input-group-btn">
+                    <button class="btn btn-custom" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                </span>
+            </div>
+            <input type="hidden" name="q" value="site:https://holywise.github.io/">
+        </form>
+    </div>
+</div>
+
+                    <div class="row">
+    <div class="col-md-11 col-md-offset-1 card">
+        <h5>Recent Posts</h5>
+        <ul class="list-unstyled posts-recent">
+            
+                <li><a href="https://holywise.github.io/2016/12/how_to_add_pages_hugo_site/">HUGOで静的ページサイトを構築する (2/3)</a></li>
+            
+                <li><a href="https://holywise.github.io/2016/12/how_to_setup_hugo_site/">HUGOで静的ページサイトを構築する (1/3)</a></li>
+            
+        </ul>
+    </div>
+</div>
+
+                    
+    
+        <div class="row">
+            <div class="col-md-11 col-md-offset-1 card">
+                <h5>categories</h5>
+                <ul class="list-unstyled posts-recent">
+                    
+                        <li><a href="https://holywise.github.io/categories/%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89">環境構築</a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    
+
+    
+
+
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-xs-6">
+    <ul class="list-inline links">
+        
+    </ul>
+</div>
+
+            <div class="col-md-4 col-xs-6">
+    <ul class="list-inline social-media">
+        
+        
+        
+        
+            <li><a target="_blank" href="https://github.com/holywise"><i class="fa fa-github fa-lg"></i></a></li>
+        
+        
+            <li><a target="_blank" href="https://ja.stackoverflow.com/users/10492/holywise"><i class="fa fa-stack-overflow fa-lg"></i></a></li>
+        
+        
+        
+        
+        
+        
+        
+        
+            <li><a target="_blank" href="mailto:holywise@gmail.com"><i class="fa fa-envelope fa-lg"></i></a></li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p>
+                    <a href="https://github.com/nraboy/hugo-phlat-theme">Phlat Theme</a> designed and built by <a href="http://www.nraboy.com">Nic Raboy</a> in San Francisco, California.
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        <div id="back-to-top" class="hidden">
+    <a href="#top" class="well well-sm" onclick="$('html,body').animate({scrollTop:0},'slow');return false;">
+        <i class="glyphicon glyphicon-chevron-up"></i> Back to Top
+    </a>
+</div>
+<script src="https://holywise.github.io/js/jquery-2.2.1.min.js"></script>
+<script src="https://holywise.github.io/js/bootstrap.min.js"></script>
+<script src="https://holywise.github.io/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>
+    if(($(window).height() + 100) < $(document).height()) {
+        $('#back-to-top').removeClass('hidden').affix({
+            offset: {
+                top: 100
+            }
+        });
+    }
+</script>
+
+    
+
+
+    
+
+
+
+    </body>
+</html>

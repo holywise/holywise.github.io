@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>環境構築 on Holywise Tech Notes</title>
+    <link>https://holywise.github.io/categories/%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89/index.xml</link>
+    <description>Recent content in 環境構築 on Holywise Tech Notes</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-JP</language>
+    <atom:link href="https://holywise.github.io/categories/%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>HUGOで静的ページサイトを構築する (2/3)</title>
+      <link>https://holywise.github.io/2016/12/how_to_add_pages_hugo_site/</link>
+      <pubDate>Thu, 29 Dec 2016 01:55:48 +0900</pubDate>
+      
+      <guid>https://holywise.github.io/2016/12/how_to_add_pages_hugo_site/</guid>
+      <description>&lt;h2 id=&#34;構築作業の全景&#34;&gt;構築作業の全景&lt;/h2&gt;
+
+&lt;p&gt;この一連のポストでは以下の手順で進めていくことになります。&lt;/p&gt;
+
+&lt;ol class=&#34;task-list&#34;&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; checked disabled class=&#34;task-list-item&#34;&gt; HUGOをインストールする&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; checked disabled class=&#34;task-list-item&#34;&gt; プロジェクト用の作業ディレクトリを作る&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; checked disabled class=&#34;task-list-item&#34;&gt; 作業ディレクトリに各種の初期設定を行う&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;strong&gt;作業ディレクトリにページデータを作成する&lt;/strong&gt; (←)&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; github page に連携する&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://holywise.github.io/2016/12/how_to_setup_hugo_site/&#34;&gt;前回のポスト&lt;/a&gt;で3番目の手順まで終えました。
+当ポストでは4番目の手順を示します。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;作業ディレクトリにページデータを作成する&#34;&gt;作業ディレクトリにページデータを作成する&lt;/h2&gt;
+
+&lt;p&gt;前回のポストまでの手順で下記のような作業ディレクトリ構造ができあがっています。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:.
+│  config.toml    # サイト設定ファイル
+│
+├─archetypes      # 新規ページ原稿のひな形テンプレートを置くところ
+├─content         # ページ原稿を置くところ
+├─data            # Hugo制御用の設定ファイルを置くところ
+├─layouts         # 生成されるサイトを構成する各htmlテンプレート
+├─static          # cssやjavascript等の静的素材を置くところ
+└─themes          # テーマファイル群を置くところ
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;/layouts&lt;/code&gt; や &lt;code&gt;/static&lt;/code&gt; は主にインストールしたテーマをカスタマイズしたいときに使用します。
+&lt;code&gt;/content&lt;/code&gt; の下がユーザが markdown 形式等で作成していくページ原稿の置き場となります。&lt;/p&gt;
+
+&lt;p&gt;ページ原稿データはコマンドラインから &lt;kbd&gt;hugo new&lt;/kbd&gt; コマンドを使用して作成しますが、
+このとき作成されるページ原稿のひな形として &lt;code&gt;/archetypes&lt;/code&gt; 配下に置いたファイルが使用されます。
+ただし今回導入したテーマ
+&lt;a href=&#34;http://themes.gohugo.io/hugo-phlat-theme/&#34;&gt;Hugo Theme: Phlat Theme&lt;/a&gt;
+は、テーマの中に &lt;code&gt;archetypes/default.md&lt;/code&gt; を持っているため、
+ユーザが自力で &lt;code&gt;/archetypes&lt;/code&gt; の下にファイルを作らなくてもそちらが参照されます。&lt;/p&gt;
+
+&lt;h3 id=&#34;原稿データを新規に追加する&#34;&gt;原稿データを新規に追加する&lt;/h3&gt;
+
+&lt;p&gt;&lt;kbd&gt;hugo new&lt;/kbd&gt;コマンド実行は作業ディレクトリのルートで行ってください。
+ここでは引数の例として &lt;code&gt;post/sample01.md&lt;/code&gt; と &lt;code&gt;page/about.md&lt;/code&gt; を指定します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace\hugo\youname.github.io&amp;gt; hugo new post/sample01.md
+D:\workspace\hugo\youname.github.io\content\post\sample01.md created
+D:\workspace\hugo\youname.github.io&amp;gt; hugo new page/about.md
+D:\workspace\hugo\youname.github.io\content\page\about.md created
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;/contens&lt;/code&gt; の下に新たに &lt;code&gt;post&lt;/code&gt; ディレクトリが作られ、その下に &lt;code&gt;sample01.md&lt;/code&gt; が作成されたことがわかります。
+同様に &lt;code&gt;page&lt;/code&gt; ディレクトリとその下に &lt;code&gt;about.md&lt;/code&gt; が作成されています。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:.
+│  config.toml
+│
+├─archetypes
+├─content
+│  ├─page                # pageセクション
+│  │      about.md
+│  │
+│  └─post                # postセクション
+│         sample01.md
+│
+├─data
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;/content&lt;/code&gt; 直下のディレクトリは「セクション」と呼ばれ、特別な意味があります。
+どのようなセクション名が使えるかは使用するテーマに依存します。
+今回採用した Phlat テーマでは &lt;code&gt;post&lt;/code&gt; および &lt;code&gt;page&lt;/code&gt; の２つのセクションを持つことができるようになっています。&lt;/p&gt;
+
+&lt;p&gt;Phlat テーマの場合は &lt;code&gt;post&lt;/code&gt; セクションの下がブログのいわゆる「エントリー」に該当し、
+&lt;code&gt;page&lt;/code&gt; セクションの下は「このサイトについて」などの固定ページに該当します。&lt;/p&gt;
+
+&lt;p&gt;セクション名ディレクトリの下の原稿データファイル名は自由に付けられます。
+何も設定しなければ基本的にここでの原稿データファイル名（拡張子を除く）が公開するサイトのURLに使われます。&lt;/p&gt;
+
+&lt;h3 id=&#34;原稿データを編集する&#34;&gt;原稿データを編集する&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;page/about.md&lt;/code&gt; は次のような内容になっているはずです。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-markdown&#34;&gt;+++
+date = &amp;quot;2016-12-26T21:10:55+09:00&amp;quot;
+title = &amp;quot;about&amp;quot;
+draft = true
+
++++
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;+++&lt;/code&gt; で挟まれた行はフロントマターと言って、そのページの作成日付等のメタ情報をTOML形式で記述します。
+&lt;code&gt;date&lt;/code&gt; の内容は自動生成されており &lt;kbd&gt;hugo new&lt;/kbd&gt; を実行した日時になっています。&lt;/p&gt;
+
+&lt;p&gt;ページ本文は2回目に出現する &lt;code&gt;+++&lt;/code&gt; 以降に記述していきます。
+以下にサンプルを示します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-markdown&#34;&gt;+++
+date = &amp;quot;2016-12-26T21:10:55+09:00&amp;quot;
+title = &amp;quot;about&amp;quot;
+draft = true
+isCJKLanguage = true
+
++++
+
+## このサイトについて
+
+このサイトはサンプルです。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;同様に &lt;code&gt;post/sample01.md&lt;/code&gt; の方も編集します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-markdown&#34;&gt;+++
+date = &amp;quot;2016-12-26T21:09:51+09:00&amp;quot;
+title = &amp;quot;sample01&amp;quot;
+draft = true
+isCJKLanguage = true
+categories = [&amp;quot;サンプル&amp;quot;]
+
++++
+
+## サンプルポスト
+
+今日はこんなことがありました。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;なおフロントマターに &lt;code&gt;isCJKLanguage = true&lt;/code&gt; を追加しています。
+これは本文が日本語（or 中国語 or 韓国語）であることを明示するものです。
+必須ではありませんが、日本語で原稿を書くなら付けておくと良いでしょう。&lt;/p&gt;
+
+&lt;h3 id=&#34;ローカル環境でプレビューを見る&#34;&gt;ローカル環境でプレビューを見る&lt;/h3&gt;
+
+&lt;p&gt;Hugo はそれ自身でウェブサーバーとして振る舞うことができます。
+作業ディレクトリのルートで &lt;kbd&gt;hugo server&lt;/kbd&gt; コマンドを実行することで、
+ローカルホストにブラウザでアクセスしてプレビューを見ることができます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace\hugo\youname.github.io&amp;gt; hugo server -D
+Started building sites ...
+Built site for language ja:
+2 of 2 drafts rendered
+0 future content
+0 expired content
+2 regular pages created
+5 other pages created
+0 non-page files copied
+3 paginator pages created
+1 categories created
+0 tags created
+total in 32 ms
+Watching for changes in D:\workspace\hugo\yourname.github.io\{data,content,layouts,static,themes}
+Serving pages from memory
+Web Server is available at http://localhost:1313/ (bind address 127.0.0.1)
+Press Ctrl+C to stop
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;-D&lt;/code&gt; オプションを付けたのはフロントマターで &lt;code&gt;draft = true&lt;/code&gt; となっているページも出力対象とするためです。&lt;/p&gt;
+
+&lt;p&gt;上記のように特にエラーがなく &lt;code&gt;Web Server is available&lt;/code&gt; と表示されていれば&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://localhost:1313/&#34;&gt;http://localhost:1313/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;にブラウザでアクセスしてみてください。
+正常に動いていれば&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://holywise.github.io/image/hugo_test_sample.png&#34; alt=&#34;HUGO Sample&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        Hugoサンプル表示
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;のように表示されるはずです。&lt;/p&gt;
+
+&lt;p&gt;また　Hugo は &lt;kbd&gt;hugo server&lt;/kbd&gt; で実行したとき、ライブリロード機能が有効になります。
+ライブリロード機能とは、サーバー機能が実行中にページデータ等を編集すると即座に表示中のページがリロードされて、
+編集内容が自動的にプレビューに反映されるものです。Hugo サーバーを実行したまま &lt;code&gt;post/sample01.md&lt;/code&gt; を編集してみてください。&lt;/p&gt;
+
+&lt;p&gt;Hugo サーバーを終了するには &lt;kbd&gt;&lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;C&lt;/kbd&gt;&lt;/kbd&gt; を押してください。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;No page found with path or logical name &#34;howto_push_hugo_site.md&#34;.
+&#34;&gt;HUGOで静的ページサイトを構築する (&lt;sup&gt;3&lt;/sup&gt;&amp;frasl;&lt;sub&gt;3&lt;/sub&gt;)&lt;/a&gt; に続きます。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>HUGOで静的ページサイトを構築する (1/3)</title>
+      <link>https://holywise.github.io/2016/12/how_to_setup_hugo_site/</link>
+      <pubDate>Thu, 29 Dec 2016 01:55:40 +0900</pubDate>
+      
+      <guid>https://holywise.github.io/2016/12/how_to_setup_hugo_site/</guid>
+      <description>&lt;h2 id=&#34;そもそも-hugo-って何&#34;&gt;そもそも HUGO って何？&lt;/h2&gt;
+
+&lt;p&gt;とてもざっくり言うと &lt;a href=&#34;https://gohugo.io&#34;&gt;HUGO&lt;/a&gt; とは Markdown 等の形式で書いたドキュメント群を、&lt;code&gt;hugo&lt;/code&gt; コマンド一発で静的なウェブサイトとしてビルドするツールです。
+ビルドされた一連のファイル群は Apache などが稼働するウェブサーバーにそのまま配置することが可能です。
+バージョン 0.17 からは多言語サイトの構築にも対応しました。
+そのためマニュアル等のドキュメントを複数の言語で提供したい、などといったことも可能です。
+もちろん静的ページ（要はHTMLファイル）を生成するものであるため、サーバー側にPHPやRuby等の実行環境は必要ありません。&lt;/p&gt;
+
+&lt;p&gt;HUGOは、主に次のような目的のサイト構築に適していると言えるでしょう。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;企業サイトのランディングページ&lt;/li&gt;
+&lt;li&gt;OSSプロジェクトのドキュメントやマニュアル&lt;/li&gt;
+&lt;li&gt;フリーランサーのポートフォリオページ&lt;/li&gt;
+&lt;li&gt;個人ブログ&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;hugo&lt;/code&gt; コマンド自体は &lt;a href=&#34;https://golang.org/&#34;&gt;Go&lt;/a&gt; 言語で作成されており、 Windows / Mac OS / Linux 等さまざまな環境上で動作します。
+ビルド速度も高速です。&lt;/p&gt;
+
+&lt;p&gt;ちなみに今ご覧のこのサイト自体も HUGO を使って構築されています。
+今回以降の一連のポストでは、Windows 上にこれらのページを作成する環境を構築し、最終的に github pages で公開するまでの手順を紹介していきます。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;構築を行う環境&#34;&gt;構築を行う環境&lt;/h2&gt;
+
+&lt;p&gt;筆者の開発環境である Windows10 Pro 64bit (Build 1511) に環境を構築していった例で示していきます。
+以下のツールがすでにインストールされていることを前提とします。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://git-scm.com/downloads&#34;&gt;git for windows&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;各種コマンド実行は cmd.exe によるコマンドプロンプトから行います。cygwin や bash は今回使用しません。
+git は CLI である必要は無く、 &lt;a href=&#34;https://ja.atlassian.com/software/sourcetree&#34;&gt;SourceTree&lt;/a&gt; などのような GUI アプリの方が使い慣れているというのであれば、そちらを利用しても構いません。&lt;/p&gt;
+
+&lt;h2 id=&#34;構築作業の全景&#34;&gt;構築作業の全景&lt;/h2&gt;
+
+&lt;p&gt;この一連のポストでは以下の手順で進めていくことになります。&lt;/p&gt;
+
+&lt;ol class=&#34;task-list&#34;&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;strong&gt;HUGOをインストールする&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;strong&gt;プロジェクト用の作業ディレクトリを作る&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;strong&gt;作業ディレクトリに各種の初期設定を行う&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;a href=&#34;https://holywise.github.io/2016/12/how_to_add_pages_hugo_site/&#34;&gt;作業ディレクトリにページデータを作成する&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; github page に連携する&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;当ポストは3番目までを示します。
+4番以降の手順はリンク先のポストをご覧ください。&lt;/p&gt;
+
+&lt;h2 id=&#34;hugo-をインストールする&#34;&gt;HUGO をインストールする&lt;/h2&gt;
+
+&lt;p&gt;HUGO のインストールは実に簡単で、実行ファイルを path の通ったところに置けばいいという、ただそれだけです。&lt;/p&gt;
+
+&lt;h3 id=&#34;バイナリのダウンロード&#34;&gt;バイナリのダウンロード&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/spf13/hugo/releases&#34;&gt;https://github.com/spf13/hugo/releases&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;上記リンク先が最新版リリース版のダウンロードサイトです。&lt;/p&gt;
+
+&lt;p&gt;2016年12月20日現在、最新版は 0.18 です。Windows 用のバイナリは&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;hugo_0.18_Windows-32bit.zip&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;hugo_0.18_Windows-64bit.zip&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;のいずれかとなりますので、インストール先の環境に応じて適した方をダウンロードします。
+以下の説明では 64bit 版をダウンロードしたものとして記述していきます。&lt;/p&gt;
+
+&lt;h3 id=&#34;バイナリのインストール&#34;&gt;バイナリのインストール&lt;/h3&gt;
+
+&lt;p&gt;上記リンク先からダウンロードした zip ファイルを展開します。次の三つのファイルが入っているはずです。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;hugo_0.18_windows_amd64.exe&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;LICENSE.md&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;README.md&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;hugo_0.18_windows_amd64.exe&lt;/code&gt; を &lt;code&gt;hugo.exe&lt;/code&gt; にリネームして path の通った任意のディレクトリにコピーします。&lt;/p&gt;
+
+&lt;p&gt;もちろん &lt;code&gt;hugo.cmd&lt;/code&gt; という名前のバッチファイルを作り、その中で &lt;code&gt;hugo_0.18_windows_amd64.exe&lt;/code&gt; を呼び出すようにしても良いですし、
+&lt;kbd&gt;mklink&lt;/kbd&gt; を利用して &lt;code&gt;hugo_0.18_windows_amd64.exe&lt;/code&gt; に対して &lt;code&gt;hugo.exe&lt;/code&gt; という名前でシンボリックリンクもしくはハードリンクを作るという方法もあります。
+そのあたりはお好みで。&lt;/p&gt;
+
+&lt;h3 id=&#34;バイナリの動作確認&#34;&gt;バイナリの動作確認&lt;/h3&gt;
+
+&lt;p&gt;コマンドプロンプトを開きます。
+&lt;kbd&gt;hugo version&lt;/kbd&gt; を実行して、バージョン番号が表示されれば正常にインストールされています。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\temp\hugotest&amp;gt;hugo version
+Hugo Static Site Generator v0.18 BuildDate: 2016-12-24T12:10:44+09:00
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;プロジェクト用の作業ディレクトリを作る&#34;&gt;プロジェクト用の作業ディレクトリを作る&lt;/h2&gt;
+
+&lt;p&gt;静的サイトを構築するためのプロジェクト作業ディレクトリを任意の場所に作成します。
+今回の例では &lt;code&gt;D:\workspace\hugo\&lt;/code&gt; の下に &lt;code&gt;yourname.github.io&lt;/code&gt; を作業ディレクトリとして作成することにします。&lt;/p&gt;
+
+&lt;p&gt;まず、親ディレクトリを作ってそこに移動します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace&amp;gt; mkdir hugo
+D:\workspace&amp;gt; cd hugo
+D:\workspace\hugo&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;HUGO でプロジェクト作業ディレクトリを作るためには &lt;kbd&gt;hugo new site&lt;/kbd&gt; コマンドを実行します。
+これにより作業ディレクトリが新規作成されます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace\hugo&amp;gt; hugo new site yourname.github.io
+Congratulations! Your new Hugo site is created in &amp;quot;D:\\workspace\\hugo\\yourname.github.io&amp;quot;.
+
+Just a few more steps and you&#39;re ready to go:
+
+1. Download a theme into the same-named folder.
+   Choose a theme from https://themes.gohugo.io/, or
+   create your own with the &amp;quot;hugo new theme &amp;lt;THEMENAME&amp;gt;&amp;quot; command.
+2. Perhaps you want to add some content. You can add single files
+   with &amp;quot;hugo new &amp;lt;SECTIONNAME&amp;gt;/&amp;lt;FILENAME&amp;gt;.&amp;lt;FORMAT&amp;gt;&amp;quot;.
+3. Start the built-in live server via &amp;quot;hugo server&amp;quot;.
+
+Visit https://gohugo.io/ for quickstart guide and full documentation.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;これでプロジェクト作業ディレクトリができました。
+作業ディレクトリは以下のような構造になっています。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace\hugo\yourname.github.io&amp;gt; tree /F
+
+D:.
+│  config.toml
+│
+├─archetypes
+├─content
+├─data
+├─layouts
+├─static
+└─themes
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;６つの空ディレクトリ &lt;code&gt;archetypes&lt;/code&gt; &lt;code&gt;content&lt;/code&gt; &lt;code&gt;data&lt;/code&gt; &lt;code&gt;layouts&lt;/code&gt; &lt;code&gt;static&lt;/code&gt; &lt;code&gt;themes&lt;/code&gt; と、
+作業ディレクトリのトップに &lt;code&gt;config.toml&lt;/code&gt; が作成されます。これは設定ファイルです。
+各ディレクトリの意味や目的は次回のポストで説明しますので、ここではそのまま先に進んでください。&lt;/p&gt;
+
+&lt;h3 id=&#34;config-toml-の初期状態&#34;&gt;config.toml の初期状態&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;languageCode = &amp;quot;en-us&amp;quot;
+baseurl = &amp;quot;http://replace-this-with-your-hugo-site.com/&amp;quot;
+title = &amp;quot;My New Hugo Site&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;config.toml&lt;/code&gt; の初期状態は上記のようなわずか3行のファイルです。&lt;/p&gt;
+
+&lt;h2 id=&#34;作業ディレクトリに各種の初期設定を行う&#34;&gt;作業ディレクトリに各種の初期設定を行う&lt;/h2&gt;
+
+&lt;h3 id=&#34;テーマをインストールする&#34;&gt;テーマをインストールする&lt;/h3&gt;
+
+&lt;p&gt;HUGO はテーマが存在しないとサイトデータを生成することができませんが、HUGO にはデフォルトテーマは付属していません。
+何はともあれ、まずはテーマを選んでインストールすることが設定の最初に行うべきことになります。&lt;/p&gt;
+
+&lt;p&gt;テーマは
+&lt;a href=&#34;http://themes.gohugo.io/&#34;&gt;Hugo Themes Site&lt;/a&gt;
+でいろいろ公開されています。&lt;/p&gt;
+
+&lt;h4 id=&#34;テーマを選択する基準&#34;&gt;テーマを選択する基準&lt;/h4&gt;
+
+&lt;p&gt;今回は当サイトのような個人ブログを目的とします。
+そういう場合は
+&lt;a href=&#34;http://themes.gohugo.io/tags/blog&#34;&gt;タグとして&amp;rdquo;blog&amp;rdquo;が設定されているもの&lt;/a&gt;
+の中から選ぶと良いでしょう。
+その上でサイトの目的に応じたものかつお好みのデザインのテーマを選びます。&lt;/p&gt;
+
+&lt;p&gt;なおテーマによっては若干のクセがあって &lt;code&gt;/content&lt;/code&gt; 配下が特定のディレクトリ構造でなければならない、などといった制限がつくものがあります。
+&lt;code&gt;/content&lt;/code&gt; 配下の構造が、サイトを公開する際に各ページのURLへ影響しますので、そのあたりも勘案した上でテーマを選択してください。&lt;/p&gt;
+
+&lt;p&gt;以降では当サイトでも使用している
+&lt;a href=&#34;http://themes.gohugo.io/hugo-phlat-theme/&#34;&gt;Hugo Theme: Phlat Theme&lt;/a&gt;
+を採用したものとして、例示していきます。&lt;/p&gt;
+
+&lt;h4 id=&#34;テーマのインストール&#34;&gt;テーマのインストール&lt;/h4&gt;
+
+&lt;p&gt;テーマごとにインストールの方法が記述されています。
+大抵は &lt;code&gt;/themes&lt;/code&gt; ディレクトリの下で &lt;kbd&gt;git clone&lt;/kbd&gt; するだけです。
+今回の Phlat テーマもその方法となります。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace\hugo\yourname.github.io&amp;gt; cd themes
+D:\workspace\hugo\yourname.github.io\themes&amp;gt; git clone https://github.com/nraboy/hugo-phlat-theme
+Cloning into &#39;hugo-phlat-theme&#39;...
+remote: Counting objects: 433, done.
+remote: Total 433 (delta 0), reused 0 (delta 0), pack-reused 433
+Receiving objects: 100% (433/433), 1.59 MiB | 39.00 KiB/s, done.
+Resolving deltas: 100% (232/232), done.
+Checking connectivity... done.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;設定ファイル-config-toml-を編集する&#34;&gt;設定ファイル config.toml を編集する&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;/config.toml&lt;/code&gt; が設定ファイルとなります。
+以下に設定例を示します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-toml&#34;&gt;#
+# config.toml
+#
+
+DefaultContentLanguage = &amp;quot;ja&amp;quot;             # ビルド時のデフォルト言語指定
+languageCode = &amp;quot;ja-JP&amp;quot;                    # 公開するページの言語指定
+
+baseurl = &amp;quot;https://yourname.github.io/&amp;quot;   # 公開時のベースとなるURL
+title = &amp;quot;My New Hugo Site&amp;quot;                # サイトのメインタイトル
+theme = &amp;quot;hugo-phlat-theme&amp;quot;                # サイトで使用するテーマ名
+
+[permalinks]
+  post = &amp;quot;/:year/:month/:slug/&amp;quot;           # post タイプページのパーマネントリンク構成
+  page = &amp;quot;/:slug/&amp;quot;                        # page タイプページのパーマネントリンク構成
+
+[taxonomies]
+  tag = &amp;quot;tags&amp;quot;                            # タググループ名
+  category = &amp;quot;categories&amp;quot;                 # カテゴリグループ名
+
+[params]
+  keywords = [&amp;quot;programming&amp;quot;, &amp;quot;developer&amp;quot;] # 生成ページに keywords 指定がないときのデフォルト値 (meta keywords)
+  description = &amp;quot;my tech notes&amp;quot;           # 生成ページに description 指定がないときのデフォルト値 (meta description)
+
+[[menu.header]]
+  name = &amp;quot;Home&amp;quot;
+  weight = 1
+  url = &amp;quot;/&amp;quot;
+
+[[menu.header]]
+  name = &amp;quot;About&amp;quot;
+  weight = 2
+  url = &amp;quot;/about/&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;使用するテーマによっては必ず記述しなければいけない項目が指定されていることがあります。
+今回の Phlat テーマでは、最低限、上記のような項目を指定しておかなくてはいけません。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://holywise.github.io/2016/12/how_to_add_pages_hugo_site/&#34;&gt;HUGOで静的ページサイトを構築する (&lt;sup&gt;2&lt;/sup&gt;&amp;frasl;&lt;sub&gt;3&lt;/sub&gt;)&lt;/a&gt; に続きます。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
