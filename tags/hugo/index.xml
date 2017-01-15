@@ -246,7 +246,12 @@ D:\workspace\hugo\yourname.github.io\public&amp;gt;git push origin master
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;これで &lt;a href=&#34;https://youname.github.io/&#34;&gt;https://youname.github.io/&lt;/a&gt; にてページが公開されているはずです。
-実際にアクセスしてみて確認してみてください。&lt;/p&gt;</description>
+実際にアクセスしてみて確認してみてください。&lt;/p&gt;
+
+&lt;h2 id=&#34;参考&#34;&gt;参考&lt;/h2&gt;
+
+&lt;p&gt;このブログ自身のソースを &lt;a href=&#34;https://github.com/holywise/gitpages&#34;&gt;https://github.com/holywise/gitpages&lt;/a&gt; にて公開しています。
+css等のカスタマイズを含めて参考にしていただければと思います。&lt;/p&gt;</description>
     </item>
     
     <item>
