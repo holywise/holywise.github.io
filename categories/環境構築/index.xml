@@ -9,6 +9,247 @@
     <atom:link href="https://holywise.github.io/categories/%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>HUGOで静的ページサイトを構築する (3/3)</title>
+      <link>https://holywise.github.io/2017/01/how_to_push_hugo_site/</link>
+      <pubDate>Sun, 15 Jan 2017 21:26:28 +0900</pubDate>
+      
+      <guid>https://holywise.github.io/2017/01/how_to_push_hugo_site/</guid>
+      <description>&lt;h2 id=&#34;構築作業の全景&#34;&gt;構築作業の全景&lt;/h2&gt;
+
+&lt;p&gt;この一連のポストでは以下の手順で進めていくことになります。&lt;/p&gt;
+
+&lt;ol class=&#34;task-list&#34;&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; checked disabled class=&#34;task-list-item&#34;&gt; HUGOをインストールする&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; checked disabled class=&#34;task-list-item&#34;&gt; プロジェクト用の作業ディレクトリを作る&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; checked disabled class=&#34;task-list-item&#34;&gt; 作業ディレクトリに各種の初期設定を行う&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; checked disabled class=&#34;task-list-item&#34;&gt; 作業ディレクトリにページデータを作成する&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;strong&gt;GitHub Pages に連携する&lt;/strong&gt; (←)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://holywise.github.io/2016/12/how_to_add_pages_hugo_site/&#34;&gt;前回のポスト&lt;/a&gt;で4番目の手順まで終えました。
+当ポストでは5番目の手順を示します。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;github-pages-のリポジトリを作成する&#34;&gt;GitHub Pages のリポジトリを作成する&lt;/h2&gt;
+
+&lt;p&gt;今回の例のように 個人ブログを GitHub Pages でページを公開したい場合は、
+&lt;code&gt;yourname.github.io&lt;/code&gt; という名称のリポジトリを作成する必要があります。
+&lt;code&gt;yourname&lt;/code&gt; の部分はユーザーのアカウント名が入ります。
+筆者の例なら &lt;code&gt;holywise.github.io&lt;/code&gt; となります。&lt;/p&gt;
+
+&lt;p&gt;リポジトリの具体的な作り方自体は&lt;a href=&#34;https://www.google.co.jp/search?q=github+%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA+%E4%BD%9C%E6%88%90&amp;amp;ie=utf-8&amp;amp;oe=utf-8&#34;&gt;いろんな方々が方法を紹介&lt;/a&gt;されているので、
+そちらを参照してください。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://help.github.com/articles/user-organization-and-project-pages/&#34;&gt;GitHub Help&lt;/a&gt;
+に記載のあるとおり、この &lt;code&gt;yourname.github.io&lt;/code&gt; リポジトリの &lt;code&gt;master&lt;/code&gt; ブランチが公開対象となります。&lt;/p&gt;
+
+&lt;h2 id=&#34;公開用ページデータのビルドを試す&#34;&gt;公開用ページデータのビルドを試す&lt;/h2&gt;
+
+&lt;h3 id=&#34;公開するページのステータスを変更する&#34;&gt;公開するページのステータスを変更する&lt;/h3&gt;
+
+&lt;p&gt;まずは公開対象としたいページ原稿データそれぞれについて、ステータスを公開にする必要があります。
+そのためには &lt;kbd&gt;hugo undraft&lt;/kbd&gt; コマンドを使用します。&lt;/p&gt;
+
+&lt;p&gt;その前に下書きステータスとなっているページ原稿データがどれなのかを &lt;kbd&gt;hugo list drafts&lt;/kbd&gt; で確認しておきましょう。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace\hugo\yourname.github.io&amp;gt; hugo list drafts
+post\sample01.md
+page\about.md
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;前回のポストで作成したデータが下書き状態であることがわかります。
+これらに対して &lt;kbd&gt;hugo undraft&lt;/kbd&gt; コマンドを適用します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace\hugo\yourname.github.io&amp;gt; hugo undraft content/page/about.md
+D:\workspace\hugo\yourname.github.io&amp;gt; hugo undraft content/post/sample01.md
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;new&lt;/code&gt; でページ原稿データを作成したときと違って &lt;code&gt;content&lt;/code&gt; ディレクトリの指定も必要となっていることに注意してください。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;undraft&lt;/code&gt; コマンドは、操作対象となったページ原稿データのフロントマターにおいて
+&lt;code&gt;draft = false&lt;/code&gt; とするとともに、&lt;code&gt;date&lt;/code&gt; 行の日時情報をコマンド実行時点のものに書き換えます。
+フロントマターを書き換えているだけですので、
+コマンドを実行する代わりに対象ページ原稿データを直接手で書き換えても同じ効果を得られます。&lt;/p&gt;
+
+&lt;p&gt;もし誤って公開ステータスにしてしまった場合は、手で &lt;code&gt;draft = true&lt;/code&gt; に書き戻す必要があります。&lt;/p&gt;
+
+&lt;h3 id=&#34;公開用データを生成する&#34;&gt;公開用データを生成する&lt;/h3&gt;
+
+&lt;p&gt;いよいよ公開用データを生成します。
+念のため、下書きステータスのページ原稿データが残っていないかを確認しましょう。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace\hugo\yourname.github.io&amp;gt; hugo list drafts
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;漏れがなければ &lt;kbd&gt;hugo&lt;/kbd&gt; を引数なしで実行します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace\hugo\yourname.github.io&amp;gt;hugo
+Started building sites ...
+Built site for language ja:
+0 draft content
+0 future content
+0 expired content
+2 regular pages created
+5 other pages created
+0 non-page files copied
+3 paginator pages created
+0 tags created
+1 categories created
+total in 187 ms
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;コマンド実行後、プロジェクト作業ディレクトリに &lt;code&gt;public&lt;/code&gt; ディレクトリが増えていることを確認してください。
+この &lt;code&gt;public&lt;/code&gt; 配下が実際に公開されるデータの置き場（生成場所）となります。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;├─layouts
+├─public  ←----------------------
+│  ├─2017
+│  │  └─01
+│  │      └─sample01
+│  ├─about
+│  ├─categories
+│  │  └─サンプル
+│  │      └─page
+│  │          └─1
+│  ├─css
+│  │  └─highlightjs-themes
+│  ├─fonts
+│  ├─js
+│  ├─page
+│  │  ├─1
+│  │  └─page
+│  │      └─1
+│  └─post
+│      └─page
+│          └─1
+├─static
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;github-リポジトリに連携する&#34;&gt;GitHub リポジトリに連携する&lt;/h2&gt;
+
+&lt;p&gt;前項の手順で作成した &lt;code&gt;public&lt;/code&gt; ディレクトリを GitHub リポジトリ &lt;code&gt;yourname.github.io&lt;/code&gt; に連携させます。&lt;/p&gt;
+
+&lt;p&gt;このとき &lt;code&gt;public&lt;/code&gt; ディレクトリ配下のみを git で管理するという簡便な手もありますが、
+ここではページ原稿データ自体も git で管理したいため、&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;プロジェクト作業ディレクトリ&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;public&lt;/code&gt; 配下&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;はそれぞれ別個のリポジトリに連携させるようにします。&lt;/p&gt;
+
+&lt;p&gt;具体的には &lt;code&gt;public&lt;/code&gt; 配下は git submodule で管理します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:.
+│
+├─archetypes
+├─content
+├─data
+├─layouts
+├─public          # ここだけ git submodule で管理する
+├─static
+└─themes          # 実質的にはここも submodule 管理される
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;メイン作業ディレクトリを-git-管理下に置く&#34;&gt;メイン作業ディレクトリを git 管理下に置く&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;public&lt;/code&gt; 配下は邪魔となるため、あらかじめ全削除しておきます。
+後で再度 &lt;kbd&gt;hugo&lt;/kbd&gt; コマンドを実行するので問題ありません。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace\hugo\yourname.github.io&amp;gt;rmdir /Q /S public
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;その後、&lt;kbd&gt;git init&lt;/kbd&gt; 等の一連の追加・コミット作業を行います。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace\hugo\yourname.github.io&amp;gt;git init
+Initialized empty Git repository in D:/workspace/hugo/yourname.github.io/.git/
+
+D:\workspace\hugo\yourname.github.io&amp;gt;git add .
+
+D:\workspace\hugo\yourname.github.io&amp;gt;git status -s
+A  config.toml
+A  content/page/about.md
+A  content/post/sample01.md
+A  themes/hugo-phlat-theme
+
+D:\workspace\hugo\yourname.github.io&amp;gt;git commit -m &amp;quot;1st commit&amp;quot;
+[master 3957caa] 1st commit
+ 4 files changed, 54 insertions(+)
+ create mode 100644 config.toml
+ create mode 100644 content/page/about.md
+ create mode 100644 content/post/sample01.md
+ create mode 160000 themes/hugo-phlat-theme
+
+D:\workspace\hugo\yourname.github.io&amp;gt;git status
+On branch master
+nothing to commit, working tree clean
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ページ原稿データのソースファイルの公開が必要ならば、
+さらに GitHub 等の外部リポジトリへの連携作業が必要となりますが、ここでは割愛します。&lt;/p&gt;
+
+&lt;h3 id=&#34;public-ディレクトリを-git-submodule-管理下に置く&#34;&gt;public ディレクトリを git submodule 管理下に置く&lt;/h3&gt;
+
+&lt;p&gt;&lt;kbd&gt;git submodule add&lt;/kbd&gt; コマンドですでに作成済みの &lt;code&gt;yourname.github.io&lt;/code&gt; を &lt;code&gt;public&lt;/code&gt; フォルダとして取り込みます。
+言うまでもありませんが &lt;code&gt;yourname&lt;/code&gt; はあなたの GitHub アカウント名で読み替えてください。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace\hugo\yourname.github.io&amp;gt;git submodule add https://github.com/yourname/yourname.github.io.git public
+Cloning into &#39;D:/workspace/hugo/yourname.github.io/public&#39;...
+warning: You appear to have cloned an empty repository.
+fatal: You are on a branch yet to be born
+Unable to checkout submodule &#39;public&#39;
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;warning や fatal のメッセージが出ますが、これは GitHub にあるリモートリポジトリが空であることによるものです。
+ここでは無視して構いません。&lt;/p&gt;
+
+&lt;h2 id=&#34;github-pages-に公開する&#34;&gt;GitHub Pages に公開する&lt;/h2&gt;
+
+&lt;p&gt;これで公開する準備が整いました。実際に公開してみましょう。&lt;/p&gt;
+
+&lt;h3 id=&#34;公開用データを生成する-1&#34;&gt;公開用データを生成する&lt;/h3&gt;
+
+&lt;p&gt;これは先ほど示した手順を再度繰り返すのみです。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace\hugo\yourname.github.io&amp;gt;hugo
+Started building sites ...
+Built site for language ja:
+0 draft content
+0 future content
+0 expired content
+2 regular pages created
+5 other pages created
+0 non-page files copied
+3 paginator pages created
+0 tags created
+1 categories created
+total in 187 ms
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;これで &lt;code&gt;public&lt;/code&gt; ディレクトリ配下にビルドされた生成ファイルが追加されます。&lt;/p&gt;
+
+&lt;h3 id=&#34;public-配下をコミットしてプッシュする&#34;&gt;&lt;code&gt;public&lt;/code&gt; 配下をコミットしてプッシュする&lt;/h3&gt;
+
+&lt;p&gt;最後の手順として submodule となっている &lt;code&gt;public&lt;/code&gt; 配下のファイルをコミットして GitHub にプッシュします。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dos&#34;&gt;D:\workspace\hugo\yourname.github.io&amp;gt;cd public
+D:\workspace\hugo\yourname.github.io\public&amp;gt;git add -A
+
+D:\workspace\hugo\yourname.github.io\public&amp;gt;git commit -m &amp;quot;1st build site data&amp;quot;
+（※出力内容は省略）
+
+D:\workspace\hugo\yourname.github.io\public&amp;gt;git push origin master
+（※出力内容は省略）
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;これで &lt;a href=&#34;https://youname.github.io/&#34;&gt;https://youname.github.io/&lt;/a&gt; にてページが公開されているはずです。
+実際にアクセスしてみて確認してみてください。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>HUGOで静的ページサイトを構築する (2/3)</title>
       <link>https://holywise.github.io/2016/12/how_to_add_pages_hugo_site/</link>
       <pubDate>Thu, 29 Dec 2016 01:55:48 +0900</pubDate>
@@ -23,7 +264,7 @@
 &lt;li&gt;&lt;input type=&#34;checkbox&#34; checked disabled class=&#34;task-list-item&#34;&gt; プロジェクト用の作業ディレクトリを作る&lt;/li&gt;
 &lt;li&gt;&lt;input type=&#34;checkbox&#34; checked disabled class=&#34;task-list-item&#34;&gt; 作業ディレクトリに各種の初期設定を行う&lt;/li&gt;
 &lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;strong&gt;作業ディレクトリにページデータを作成する&lt;/strong&gt; (←)&lt;/li&gt;
-&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; github page に連携する&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;a href=&#34;https://holywise.github.io/2017/01/how_to_push_hugo_site/&#34;&gt;GitHub Pages に連携する&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;&lt;a href=&#34;https://holywise.github.io/2016/12/how_to_setup_hugo_site/&#34;&gt;前回のポスト&lt;/a&gt;で3番目の手順まで終えました。
@@ -107,7 +348,8 @@ draft = true
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;code&gt;+++&lt;/code&gt; で挟まれた行はフロントマターと言って、そのページの作成日付等のメタ情報をTOML形式で記述します。
-&lt;code&gt;date&lt;/code&gt; の内容は自動生成されており &lt;kbd&gt;hugo new&lt;/kbd&gt; を実行した日時になっています。&lt;/p&gt;
+&lt;code&gt;date&lt;/code&gt; の内容は自動生成されており &lt;kbd&gt;hugo new&lt;/kbd&gt; を実行した日時になっています。
+&lt;code&gt;draft = true&lt;/code&gt; はこの原稿データが下書きステータスであることを表しています。&lt;/p&gt;
 
 &lt;p&gt;ページ本文は2回目に出現する &lt;code&gt;+++&lt;/code&gt; 以降に記述していきます。
 以下にサンプルを示します。&lt;/p&gt;
@@ -144,6 +386,9 @@ categories = [&amp;quot;サンプル&amp;quot;]
 &lt;p&gt;なおフロントマターに &lt;code&gt;isCJKLanguage = true&lt;/code&gt; を追加しています。
 これは本文が日本語（or 中国語 or 韓国語）であることを明示するものです。
 必須ではありませんが、日本語で原稿を書くなら付けておくと良いでしょう。&lt;/p&gt;
+
+&lt;p&gt;また Hugo は markdown の処理に &lt;a href=&#34;https://github.com/russross/blackfriday&#34;&gt;Blackfriday&lt;/a&gt; を使用しています。
+標準的な markdown の記法に若干の拡張がされているので、どのような記法が使えるかを上記のリンク先で見ておくことをお勧めします。&lt;/p&gt;
 
 &lt;h3 id=&#34;ローカル環境でプレビューを見る&#34;&gt;ローカル環境でプレビューを見る&lt;/h3&gt;
 
@@ -206,8 +451,7 @@ Press Ctrl+C to stop
 
 &lt;p&gt;Hugo サーバーを終了するには &lt;kbd&gt;&lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;C&lt;/kbd&gt;&lt;/kbd&gt; を押してください。&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&#34;No page found with path or logical name &#34;howto_push_hugo_site.md&#34;.
-&#34;&gt;HUGOで静的ページサイトを構築する (&lt;sup&gt;3&lt;/sup&gt;&amp;frasl;&lt;sub&gt;3&lt;/sub&gt;)&lt;/a&gt; に続きます。&lt;/p&gt;</description>
+&lt;p&gt;&lt;a href=&#34;https://holywise.github.io/2017/01/how_to_push_hugo_site/&#34;&gt;HUGOで静的ページサイトを構築する (&lt;sup&gt;3&lt;/sup&gt;&amp;frasl;&lt;sub&gt;3&lt;/sub&gt;)&lt;/a&gt; に続きます。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -218,7 +462,8 @@ Press Ctrl+C to stop
       <guid>https://holywise.github.io/2016/12/how_to_setup_hugo_site/</guid>
       <description>&lt;h2 id=&#34;そもそも-hugo-って何&#34;&gt;そもそも HUGO って何？&lt;/h2&gt;
 
-&lt;p&gt;とてもざっくり言うと &lt;a href=&#34;https://gohugo.io&#34;&gt;HUGO&lt;/a&gt; とは Markdown 等の形式で書いたドキュメント群を、&lt;code&gt;hugo&lt;/code&gt; コマンド一発で静的なウェブサイトとしてビルドするツールです。
+&lt;p&gt;とてもざっくり言うと &lt;a href=&#34;https://gohugo.io&#34;&gt;HUGO&lt;/a&gt; とは Markdown 等の形式で書いたドキュメント群を、
+&lt;code&gt;hugo&lt;/code&gt; コマンド一発で静的なウェブサイトとしてビルドするツールです。
 ビルドされた一連のファイル群は Apache などが稼働するウェブサーバーにそのまま配置することが可能です。
 バージョン 0.17 からは多言語サイトの構築にも対応しました。
 そのためマニュアル等のドキュメントを複数の言語で提供したい、などといったことも可能です。
@@ -233,25 +478,34 @@ Press Ctrl+C to stop
 &lt;li&gt;個人ブログ&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;code&gt;hugo&lt;/code&gt; コマンド自体は &lt;a href=&#34;https://golang.org/&#34;&gt;Go&lt;/a&gt; 言語で作成されており、 Windows / Mac OS / Linux 等さまざまな環境上で動作します。
+&lt;p&gt;&lt;code&gt;hugo&lt;/code&gt; コマンド自体は &lt;a href=&#34;https://golang.org/&#34;&gt;Go&lt;/a&gt; 言語で作成されており、
+Windows / Mac OS / Linux 等さまざまな環境上で動作します。
 ビルド速度も高速です。&lt;/p&gt;
 
 &lt;p&gt;ちなみに今ご覧のこのサイト自体も HUGO を使って構築されています。
-今回以降の一連のポストでは、Windows 上にこれらのページを作成する環境を構築し、最終的に github pages で公開するまでの手順を紹介していきます。&lt;/p&gt;
+今回以降の一連のポストでは、Windows 上にこれらのページを作成する環境を構築し、
+最終的に &lt;a href=&#34;https://pages.github.com/&#34;&gt;GitHub Pages&lt;/a&gt; で公開するまでの手順を紹介していきます。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;構築を行う環境&#34;&gt;構築を行う環境&lt;/h2&gt;
+&lt;h2 id=&#34;構築を行う環境および前提条件&#34;&gt;構築を行う環境および前提条件&lt;/h2&gt;
 
 &lt;p&gt;筆者の開発環境である Windows10 Pro 64bit (Build 1511) に環境を構築していった例で示していきます。
-以下のツールがすでにインストールされていることを前提とします。&lt;/p&gt;
+Windwos の特定のバージョンに依存するような処理は行わないので、Windows7 等でも特に問題はないはずです。&lt;/p&gt;
+
+&lt;p&gt;以下のツールがすでにインストールされていることを前提とします。&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://git-scm.com/downloads&#34;&gt;git for windows&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;各種コマンド実行は cmd.exe によるコマンドプロンプトから行います。cygwin や bash は今回使用しません。
-git は CLI である必要は無く、 &lt;a href=&#34;https://ja.atlassian.com/software/sourcetree&#34;&gt;SourceTree&lt;/a&gt; などのような GUI アプリの方が使い慣れているというのであれば、そちらを利用しても構いません。&lt;/p&gt;
+git は CLI である必要は無く、 &lt;a href=&#34;https://ja.atlassian.com/software/sourcetree&#34;&gt;SourceTree&lt;/a&gt; などのような
+GUI アプリの方が使い慣れているというのであれば、そちらを利用しても構いません。&lt;/p&gt;
+
+&lt;p&gt;また &lt;a href=&#34;https://github.com/&#34;&gt;GitHub&lt;/a&gt; アカウントはすでに持っているものとします。
+これは GitHub Pages でページを公開するためには必須となります。
+もしまだアカウントを取得していないのであれば &lt;a href=&#34;https://github.com/join?source=header-home&#34;&gt;Sign up&lt;/a&gt; してください。&lt;/p&gt;
 
 &lt;h2 id=&#34;構築作業の全景&#34;&gt;構築作業の全景&lt;/h2&gt;
 
@@ -262,7 +516,7 @@ git は CLI である必要は無く、 &lt;a href=&#34;https://ja.atlassian.com
 &lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;strong&gt;プロジェクト用の作業ディレクトリを作る&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;strong&gt;作業ディレクトリに各種の初期設定を行う&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;a href=&#34;https://holywise.github.io/2016/12/how_to_add_pages_hugo_site/&#34;&gt;作業ディレクトリにページデータを作成する&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; github page に連携する&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;a href=&#34;https://holywise.github.io/2017/01/how_to_push_hugo_site/&#34;&gt;GitHub Pages に連携する&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;当ポストは3番目までを示します。
@@ -316,7 +570,9 @@ Hugo Static Site Generator v0.18 BuildDate: 2016-12-24T12:10:44+09:00
 &lt;h2 id=&#34;プロジェクト用の作業ディレクトリを作る&#34;&gt;プロジェクト用の作業ディレクトリを作る&lt;/h2&gt;
 
 &lt;p&gt;静的サイトを構築するためのプロジェクト作業ディレクトリを任意の場所に作成します。
-今回の例では &lt;code&gt;D:\workspace\hugo\&lt;/code&gt; の下に &lt;code&gt;yourname.github.io&lt;/code&gt; を作業ディレクトリとして作成することにします。&lt;/p&gt;
+今回の例では &lt;code&gt;D:\workspace\hugo\&lt;/code&gt; の下に &lt;code&gt;yourname.github.io&lt;/code&gt; を作業ディレクトリとして作成することにします。
+&lt;code&gt;yourname&lt;/code&gt; の部分はあなたの GitHub アカウント名に合わせておいてください。
+これ以降 &lt;code&gt;yourname&lt;/code&gt; の表記が出てきた場合は、適宜ご自身のアカウント名に読み替えてください。&lt;/p&gt;
 
 &lt;p&gt;まず、親ディレクトリを作ってそこに移動します。&lt;/p&gt;
 

@@ -8,7 +8,7 @@
     
     
     
-    <meta name="description" content="HUGOで静的ページを作成して github pages で公開するまでの手順" />
+    <meta name="description" content="HUGOで静的ページを作成して GitHub Pages で公開するまでの手順" />
     <meta name="keywords" content='Hugo,Windows,GitHub' />
     
         <meta name="author" content="holywise" />
@@ -94,7 +94,7 @@
 <li><input type="checkbox" checked disabled class="task-list-item"> プロジェクト用の作業ディレクトリを作る</li>
 <li><input type="checkbox" checked disabled class="task-list-item"> 作業ディレクトリに各種の初期設定を行う</li>
 <li><input type="checkbox" disabled class="task-list-item"> <strong>作業ディレクトリにページデータを作成する</strong> (←)</li>
-<li><input type="checkbox" disabled class="task-list-item"> github page に連携する</li>
+<li><input type="checkbox" disabled class="task-list-item"> <a href="/2017/01/how_to_push_hugo_site/">GitHub Pages に連携する</a></li>
 </ol>
 
 <p><a href="/2016/12/how_to_setup_hugo_site/">前回のポスト</a>で3番目の手順まで終えました。
@@ -178,7 +178,8 @@ draft = true
 </code></pre>
 
 <p><code>+++</code> で挟まれた行はフロントマターと言って、そのページの作成日付等のメタ情報をTOML形式で記述します。
-<code>date</code> の内容は自動生成されており <kbd>hugo new</kbd> を実行した日時になっています。</p>
+<code>date</code> の内容は自動生成されており <kbd>hugo new</kbd> を実行した日時になっています。
+<code>draft = true</code> はこの原稿データが下書きステータスであることを表しています。</p>
 
 <p>ページ本文は2回目に出現する <code>+++</code> 以降に記述していきます。
 以下にサンプルを示します。</p>
@@ -215,6 +216,9 @@ categories = [&quot;サンプル&quot;]
 <p>なおフロントマターに <code>isCJKLanguage = true</code> を追加しています。
 これは本文が日本語（or 中国語 or 韓国語）であることを明示するものです。
 必須ではありませんが、日本語で原稿を書くなら付けておくと良いでしょう。</p>
+
+<p>また Hugo は markdown の処理に <a href="https://github.com/russross/blackfriday">Blackfriday</a> を使用しています。
+標準的な markdown の記法に若干の拡張がされているので、どのような記法が使えるかを上記のリンク先で見ておくことをお勧めします。</p>
 
 <h3 id="ローカル環境でプレビューを見る">ローカル環境でプレビューを見る</h3>
 
@@ -277,8 +281,7 @@ Press Ctrl+C to stop
 
 <p>Hugo サーバーを終了するには <kbd><kbd>Ctrl</kbd>+<kbd>C</kbd></kbd> を押してください。</p>
 
-<p><a href="No page found with path or logical name "howto_push_hugo_site.md".
-">HUGOで静的ページサイトを構築する (<sup>3</sup>&frasl;<sub>3</sub>)</a> に続きます。</p>
+<p><a href="/2017/01/how_to_push_hugo_site/">HUGOで静的ページサイトを構築する (<sup>3</sup>&frasl;<sub>3</sub>)</a> に続きます。</p>
         
     <ul class="list-inline tags" style="margin-top: 15px; margin-left: 0px">
         
@@ -319,6 +322,8 @@ Press Ctrl+C to stop
     <div class="col-md-11 col-md-offset-1 card">
         <h5>Recent Posts</h5>
         <ul class="list-unstyled posts-recent">
+            
+                <li><a href="https://holywise.github.io/2017/01/how_to_push_hugo_site/">HUGOで静的ページサイトを構築する (3/3)</a></li>
             
                 <li><a href="https://holywise.github.io/2016/12/how_to_add_pages_hugo_site/">HUGOで静的ページサイトを構築する (2/3)</a></li>
             
