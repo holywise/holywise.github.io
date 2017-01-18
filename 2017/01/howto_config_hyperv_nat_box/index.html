@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.18" />
+    <title>Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (2/2)</title>
+    
+    
+    
+    <meta name="description" content="Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築するまでの手順" />
+    <meta name="keywords" content='Windows,Hyper-V,CentOS' />
+    
+        <meta name="author" content="holywise" />
+    
+    
+    <link href="" rel="alternate" type="application/rss+xml" title="Holywise Tech Notes" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/highlightjs-themes/darcula.css" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/phlat.css" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/custom.css" />
+    
+        
+    
+</head>
+
+    <body>
+        <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Holywise Tech Notes</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            Home
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/about/">
+                            About
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+        <div id="top" class="container">
+            <div class="row" id="content-main">
+                <div class="col-md-8">
+                    <div class="row">
+    <div class="col-md-12 content-card shadow-card">
+        <h1>Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (2/2)</h1>
+        
+            
+            <ul class="list-inline meta">
+                <li><i class="fa fa-calendar"></i>2017-01-18</li>
+                <li><i class="fa fa-user"></i>holywise</li>
+                
+                    
+                    <li><i class="fa fa-folder"></i><a href="https://holywise.github.io/categories/%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89">環境構築</a></li>
+                
+            </ul>
+        
+        
+    <ul class="list-inline share" style="margin-top: 15px; margin-left: 0px">
+        <li class="facebook-share"><a target="_blank" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fholywise.github.io%2f2017%2f01%2fhowto_config_hyperv_nat_box%2f" rel="nofollow" title="Facebook"><i class="fa fa-facebook fa-lg"></i></a></li>
+        <li class="googleplus-share"><a target="_blank" href="https://plus.google.com/share?url=https%3a%2f%2fholywise.github.io%2f2017%2f01%2fhowto_config_hyperv_nat_box%2f" rel="nofollow" title="Google+"><i class="fa fa-google-plus fa-lg"></i></a></li>
+        <li class="twitter-share"><a target="_blank" href="https://twitter.com/share?url=https%3a%2f%2fholywise.github.io%2f2017%2f01%2fhowto_config_hyperv_nat_box%2f&amp;text=Windows10%20Client%20Hyper-V%20%e3%81%ab%e3%81%a6%20CentOS7%20box%20%e3%81%ab%20NAT%20%e7%92%b0%e5%a2%83%e3%82%92%e6%a7%8b%e7%af%89%e3%81%99%e3%82%8b%20%282%2f2%29" rel="nofollow" title="Twitter"><i class="fa fa-twitter fa-lg"></i></a></li>
+        <li class="reddit-share"><a target="_blank" href="http://reddit.com/submit?url=https%3a%2f%2fholywise.github.io%2f2017%2f01%2fhowto_config_hyperv_nat_box%2f&amp;title=Windows10%20Client%20Hyper-V%20%e3%81%ab%e3%81%a6%20CentOS7%20box%20%e3%81%ab%20NAT%20%e7%92%b0%e5%a2%83%e3%82%92%e6%a7%8b%e7%af%89%e3%81%99%e3%82%8b%20%282%2f2%29" rel="nofollow" title="reddit"><i class="fa fa-reddit fa-lg"></i></a></li>
+        <li class="linkedin-share"><a target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fholywise.github.io%2f2017%2f01%2fhowto_config_hyperv_nat_box%2f" rel="nofollow" title="LinkedIn"><i class="fa fa-linkedin fa-lg"></i></a></li>
+        <li class="hatena-share"><a target="_blank" href="http://b.hatena.ne.jp/add?mode=confirm&amp;url=https%3a%2f%2fholywise.github.io%2f2017%2f01%2fhowto_config_hyperv_nat_box%2f&amp;title=Windows10%20Client%20Hyper-V%20%e3%81%ab%e3%81%a6%20CentOS7%20box%20%e3%81%ab%20NAT%20%e7%92%b0%e5%a2%83%e3%82%92%e6%a7%8b%e7%af%89%e3%81%99%e3%82%8b%20%282%2f2%29" rel="nofollow" title="はてなブックマーク"><i class="fa fa-hatena fa-lg"></i></a></li>
+    </ul>
+
+
+        <h2 id="構築作業の全景">構築作業の全景</h2>
+
+<p>この一連のポストでは以下の手順で進めていくことになります。</p>
+
+<ol class="task-list">
+<li><input type="checkbox" checked disabled class="task-list-item"> <a href="/2017/01/howto_setup_hyperv_nat_box/">ホスト側に仮想ネットワークアダプタを作成する</a></li>
+<li><input type="checkbox" disabled class="task-list-item"> <strong>ゲスト側にネットワーク設定を行う</strong> (←)</li>
+</ol>
+
+<p><a href="/2017/01/howto_setup_hyperv_nat_box/">前回のポスト</a>では前半の手順を終えました。
+当ポストでは後半の手順を示します。</p>
+
+
+<figure >
+    
+        <img src="/image/HyperV_NAT_and_HostOnly.png" alt="Network構成図" />
+    
+    
+    <figcaption>
+        <p>
+        ネットワーク構成図
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<p></p>
+
+<h2 id="ゲスト用の-hyper-v-box-を作成する">ゲスト用の Hyper-V box を作成する</h2>
+
+<p>Hyper-V マネージャー を起動し、新規仮想マシンを作成します。
+その際に、仮想マシンにはネットワークアダプタを２つ作成し、
+一方には仮想スイッチに <code>NAPT</code> が、もう一方には仮想スイッチに <code>HostOnly</code> が接続されるようにしておきます。</p>
+
+
+<figure >
+    
+        <img src="/image/HyperV_create_wizard.png" alt="Hyper-V 仮想マシンの新規作成ウィザード" />
+    
+    
+    <figcaption>
+        <p>
+        新規作成ウィザードのネットワーク構成画面
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+
+<figure >
+    
+        <img src="/image/HyperV_machine_property.png" alt="Hyper-V 仮想マシンのプロパティ" />
+    
+    
+    <figcaption>
+        <p>
+        仮想マシンのプロパティ画面
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<h2 id="ゲストosをインストールし-ネットワーク設定を行う">ゲストOSをインストールし、ネットワーク設定を行う</h2>
+
+<p>CentOS7 のインストール自体は、インストーラーウィザードが指定する手順どおりに行います。
+その際に「ネットワークとホスト名」の設定で <code>NAPT</code> および <code>HostOnly</code> の仮想スイッチに繋がっている
+２つの「イーサネット」について、それぞれ次のように設定します。</p>
+
+<h3 id="napt">NAPT</h3>
+
+<h4 id="ipv4のセッティング">IPv4のセッティング</h4>
+
+<table class="table table-striped">
+  <tr>
+    <th style="width: 8em;">項目</th>
+    <th>値</th>
+    <th>備考</th>
+  </tr>
+  <tr>
+    <td>方式</td>
+    <td>手動</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>アドレス</td>
+    <td>10.0.1.100</td>
+    <td>NAPT用仮想スイッチに <kbd>New-NetNat</kbd> で割り当てた 10.0.1.0/24 に属する任意のもの</td>
+  </tr>
+  <tr>
+    <td>ネットマスク</td>
+    <td>255.255.255.0</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>ゲートウェイ</td>
+    <td>10.0.1.1</td>
+    <td>NAPT用仮想スイッチに <kbd>New-NetIPAddress</kbd> で割り当てたIPアドレスを指定</td>
+  </tr>
+  <tr>
+    <td>DNSサーバー</td>
+    <td>192.168.1.1</td>
+    <td>ホストPCが物理NICから参照しているDNSサーバーを指定</td>
+  </tr>
+</table>
+
+<h3 id="hostonly">HostOnly</h3>
+
+<h4 id="ipv4のセッティング-1">IPv4のセッティング</h4>
+
+<table class="table table-striped">
+  <tr>
+    <th style="width: 8em;">項目</th>
+    <th>値</th>
+    <th>備考</th>
+  </tr>
+  <tr>
+    <td>方式</td>
+    <td>手動</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>アドレス</td>
+    <td>192.168.10.100</td>
+    <td>ホストオンリー用仮想スイッチに <kbd>New-NetIPAddress</kbd> で割り当てた 192.168.10.1/24 と同じ空間に属する任意のもの</td>
+  </tr>
+  <tr>
+    <td>ネットマスク</td>
+    <td>255.255.255.0</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>ゲートウェイ</td>
+    <td></td>
+    <td>空欄のまま</td>
+  </tr>
+  <tr>
+    <td>DNSサーバー</td>
+    <td></td>
+    <td>空欄のまま</td>
+  </tr>
+</table>
+
+<h3 id="設定の確認">設定の確認</h3>
+
+<p>インストール終了後、ゲストOSにログインしてネットワーク設定の確認を行います。
+CentOS7 の場合は <kbd>ip route</kbd> を使用します。</p>
+
+<pre><code class="language-sh">$ ip route
+default via 10.0.1.1 dev eth0  proto static  metric 100
+10.0.1.0/24 dev eth0  proto kernel  scope link  src 10.0.1.100  metric 100
+192.168.10.0/24 dev eth1  proto kernel  scope link  src 192.168.10.100  metric 100
+</code></pre>
+
+<p>上記のように <code>default</code> ルートが <code>10.0.1.1</code> (「NAPT IPv4のセッティング」で指定したゲートウェイ) に向いていることを確認してください。
+その後 <kbd>ping -c3 www.google.com</kbd> などとして、外部ネットワークへの到達性をチェックすると良いでしょう。</p>
+
+<p>なお標準状態では仮想マシンからホストPCへの ping はWindowsファイアーウォールにブロックされてしまいます。
+そのため <kbd>ping 192.168.10.1</kbd> などとしても 100% paket loss となりますが、それで正常です。</p>
+
+<p>仮想マシンからホストPCへの ping の到達性を確認したい場合は、
+「セキュリティが強化されたWindowsファイアウォール」
+（<kbd><kbd>Win</kbd> + <kbd>R</kbd></kbd>で開くダイアログから<kbd>wf.msc</kbd>で起動）
+から「受信の規則」→「仮想マシンの監視（エコー要求 - ICMPv4受信）」の「規則を有効化」してください。</p>
+
+
+<figure >
+    
+        <img src="/image/windows_firewall_icmp.png" alt="セキュリティが強化されたWindowsファイアウォール" />
+    
+    
+    <figcaption>
+        <p>
+        仮想マシンの監視ルールの有効化
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<p>なおこのルールはプライベート・パブリック・ドメインのすべてのネットワークプロファイルに対して icmp 受信を開放するものなので、
+到達性の確認ができた時点で再度無効化しておくことをお勧めします。</p>
+
+<p>これでゲスト側のネットワーク設定は完了です。</p>
+
+<h2 id="任意-開発環境用にwindowsファイアウォールの設定を変更する">【任意】開発環境用にWindowsファイアウォールの設定を変更する</h2>
+
+<p>前項までの手順を進めることで、前回のポストで挙げた</p>
+
+<ul>
+<li>ゲストの CentOS 環境へはホストとなる Windows10 からしかアクセスできないようにしたい</li>
+<li>ゲストの CentOS 環境の中からは自由に外部（インターネット）へアクセスしたい</li>
+</ul>
+
+<p>という目的自体はすでに達成しています。</p>
+
+<p>ところでこの仮想マシンをウェブアプリ等の開発環境としたい場合、
+仮想マシンからホストPCへの通信が可能となっていて欲しいことがよくあります。
+例えば仮想マシン上で動作するPHPアプリケーションを <a href="https://xdebug.org/">Xdebug</a> でリモートデバッグしたい、
+などというケースです。</p>
+
+<p>ところが前回・今回の一連の手順で示したネットワーク構成では、
+「HostOnly」「NAPT」ともに「パブリックネットワーク」として扱われるようになるため、
+標準状態では仮想マシンからホストPCへの接続が厳しく制限されてしまいます。</p>
+
+<p>ここではホストPCが、仮想マシン上で動作している Xdebug からの接続を受け付けるように、
+Windowsファイアウォールを設定する例を示します。</p>
+
+<h3 id="xdebug-から接続されるポート番号を確認する">Xdebug から接続されるポート番号を確認する</h3>
+
+<p>仮想マシンの <code>/etc/php.d</code> 配下に、次のような内容の <code>xdebug.ini</code> が置かれているケースで考えます。</p>
+
+<pre><code class="language-ini">; Enable xdebug extension module
+zend_extension=/usr/lib64/php/modules/xdebug.so
+
+; see http://xdebug.org/docs/all_settings
+xdebug.remote_enable=1
+xdebug.remote_connect_back=1
+xdebug.remote_port=9000
+</code></pre>
+
+<p>この設定では、仮想マシンからホストPCの9000番ポートへのコールバックが発生することになります。
+つまり仮想マシンからホストPCの9000番ポートが通過できるように設定すれば良いということになります。</p>
+
+<h3 id="windowsファイアウォールを設定する">Windowsファイアウォールを設定する</h3>
+
+<p><kbd><kbd>Win</kbd> + <kbd>R</kbd></kbd>で開くダイアログから<kbd>wf.msc</kbd>で
+「セキュリティが強化されたWindowsファイアウォール」を起動します。</p>
+
+
+<figure class="origin">
+    
+        <img src="/image/run_wf_msc.png" alt="コマンドを指定して実行" />
+    
+    
+    <figcaption>
+        <p>
+        コマンドを指定して実行
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<p>受信の規則から「新しい規則」を選択して「新規の受信の規則ウィザード」に沿って各種設定を行っていきます。</p>
+
+<h4 id="規則の種類">規則の種類</h4>
+
+<p>作成するファイアウォールの規則の種類を選択します。</p>
+
+<p>今回は仮想マシン上のプログラムのリモートデバッグを目的としているため、</p>
+
+<ul>
+<li><code>カスタム</code></li>
+</ul>
+
+<p>を選択して、細かく指定をしていきます。</p>
+
+
+<figure >
+    
+        <img src="/image/wf_rule_wizard_01.png" alt="受信の規則ウィザード" />
+    
+    
+    <figcaption>
+        <p>
+        規則の種類
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<h4 id="プログラム">プログラム</h4>
+
+<p>待ち受けるプログラムを特定しても構いませんが、
+IDEなどはバージョンのアップグレードなどでプログラムの配置位置が変わったりすることと、
+後工程のスコープ指定で対象とするネットワークを限定できるため、</p>
+
+<ul>
+<li><code>すべてのプログラム</code></li>
+</ul>
+
+<p>を選択します。</p>
+
+
+<figure >
+    
+        <img src="/image/wf_rule_wizard_02.png" alt="受信の規則ウィザード" />
+    
+    
+    <figcaption>
+        <p>
+        プログラム
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<h4 id="プロトコルとポート">プロトコルとポート</h4>
+
+<p>先ほど確認したとおり、Xdebugの待ち受けは9000番ポートとなります。</p>
+
+<ul>
+<li>プロトコルの種類：<code>TCP</code></li>
+<li>ローカルポート：<code>9000</code></li>
+<li>リモートポート：<code>すべてのポート</code></li>
+</ul>
+
+<p>を選択します。</p>
+
+
+<figure >
+    
+        <img src="/image/wf_rule_wizard_03.png" alt="受信の規則ウィザード" />
+    
+    
+    <figcaption>
+        <p>
+        プロトコルとポート
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<h4 id="スコープ">スコープ</h4>
+
+<p>前項までの行程で設定を行った <code>HostOnly</code> ネットワークからのみ、接続を受け付けるようにします。</p>
+
+<ul>
+<li>ローカルIPアドレス：<code>192.168.10.1</code></li>
+<li>リモートIPアドレス：<code>192.168.10.0/24</code></li>
+</ul>
+
+<p>を指定します。</p>
+
+
+<figure >
+    
+        <img src="/image/wf_rule_wizard_04.png" alt="受信の規則ウィザード" />
+    
+    
+    <figcaption>
+        <p>
+        スコープ
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<h4 id="操作">操作</h4>
+
+<p>パケットを通したいので</p>
+
+<ul>
+<li><code>接続を許可する</code></li>
+</ul>
+
+<p>を選択します。</p>
+
+
+<figure >
+    
+        <img src="/image/wf_rule_wizard_05.png" alt="受信の規則ウィザード" />
+    
+    
+    <figcaption>
+        <p>
+        操作
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<h4 id="プロファイル">プロファイル</h4>
+
+<p>これまでの手順で設定した <code>HostOnly</code> ネットワークアダプタは「パブリックネットワーク」として扱われていますので、</p>
+
+<ul>
+<li><code>パブリック</code></li>
+</ul>
+
+<p>を選択します。</p>
+
+
+<figure >
+    
+        <img src="/image/wf_rule_wizard_06.png" alt="受信の規則ウィザード" />
+    
+    
+    <figcaption>
+        <p>
+        プロファイル
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<h4 id="名前">名前</h4>
+
+<p>最後に規則に任意の名前を付けます。
+ここの例では「Xdebug」としています。</p>
+
+<p>最後に「完了」をクリックしてください。</p>
+
+
+<figure >
+    
+        <img src="/image/wf_rule_wizard_07.png" alt="受信の規則ウィザード" />
+    
+    
+    <figcaption>
+        <p>
+        名前
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<p>以上で、すべてのネットワーク設定が完了しました。</p>
+        
+    <ul class="list-inline tags" style="margin-top: 15px; margin-left: 0px">
+        
+            <li style=""><a href="https://holywise.github.io/tags/windows">Windows</a></li>
+        
+            <li style=""><a href="https://holywise.github.io/tags/hyper-v">Hyper-V</a></li>
+        
+            <li style=""><a href="https://holywise.github.io/tags/centos">CentOS</a></li>
+        
+    </ul>
+
+
+    </div>
+</div>
+
+                    
+    
+
+
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+    <div class="col-md-11 col-md-offset-1 card">
+        <h5>Search</h5>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form">
+            <div class="input-group">
+                <input class="form-control" type="search" name="q" />
+                <span class="input-group-btn">
+                    <button class="btn btn-custom" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                </span>
+            </div>
+            <input type="hidden" name="q" value="site:https://holywise.github.io/">
+        </form>
+    </div>
+</div>
+
+                    <div class="row">
+    <div class="col-md-11 col-md-offset-1 card">
+        <h5>Recent Posts</h5>
+        <ul class="list-unstyled posts-recent">
+            
+                <li><a href="https://holywise.github.io/2017/01/howto_config_hyperv_nat_box/">Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (2/2)</a></li>
+            
+                <li><a href="https://holywise.github.io/2017/01/howto_setup_hyperv_nat_box/">Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (1/2)</a></li>
+            
+                <li><a href="https://holywise.github.io/2017/01/how_to_push_hugo_site/">HUGOで静的ページサイトを構築する (3/3)</a></li>
+            
+                <li><a href="https://holywise.github.io/2016/12/how_to_add_pages_hugo_site/">HUGOで静的ページサイトを構築する (2/3)</a></li>
+            
+                <li><a href="https://holywise.github.io/2016/12/how_to_setup_hugo_site/">HUGOで静的ページサイトを構築する (1/3)</a></li>
+            
+        </ul>
+    </div>
+</div>
+
+                    
+    
+        <div class="row">
+            <div class="col-md-11 col-md-offset-1 card">
+                <h5>categories</h5>
+                <ul class="list-unstyled posts-recent">
+                    
+                        <li><a href="https://holywise.github.io/categories/%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89">環境構築</a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    
+
+    
+
+
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-xs-6">
+    <ul class="list-inline links">
+        
+    </ul>
+</div>
+
+            <div class="col-md-4 col-xs-6">
+    <ul class="list-inline social-media">
+        
+        
+        
+        
+            <li><a target="_blank" href="https://github.com/holywise"><i class="fa fa-github fa-lg"></i></a></li>
+        
+        
+            <li><a target="_blank" href="https://ja.stackoverflow.com/users/10492/holywise"><i class="fa fa-stack-overflow fa-lg"></i></a></li>
+        
+        
+        
+        
+        
+        
+        
+        
+            <li><a target="_blank" href="mailto:holywise@gmail.com"><i class="fa fa-envelope fa-lg"></i></a></li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p>
+                    <a href="https://github.com/nraboy/hugo-phlat-theme">Phlat Theme</a> designed and built by <a href="http://www.nraboy.com">Nic Raboy</a> in San Francisco, California.
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        <div id="back-to-top" class="hidden">
+    <a href="#top" class="well well-sm" onclick="$('html,body').animate({scrollTop:0},'slow');return false;">
+        <i class="glyphicon glyphicon-chevron-up"></i> Back to Top
+    </a>
+</div>
+<script src="https://holywise.github.io/js/jquery-2.2.1.min.js"></script>
+<script src="https://holywise.github.io/js/bootstrap.min.js"></script>
+<script src="https://holywise.github.io/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>
+    if(($(window).height() + 100) < $(document).height()) {
+        $('#back-to-top').removeClass('hidden').affix({
+            offset: {
+                top: 100
+            }
+        });
+    }
+</script>
+
+    
+
+
+    
+
+
+
+    </body>
+</html>

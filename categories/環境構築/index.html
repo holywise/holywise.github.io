@@ -62,6 +62,94 @@
                     
                         <div class="row">
                             <div class="col-md-12 content-card">
+                                <h1><a href="https://holywise.github.io/2017/01/howto_config_hyperv_nat_box/">Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (2/2)</a></h1>
+                                <ul class="list-inline">
+                                    <li><i class="fa fa-calendar"></i>2017-01-18</li>
+                                    <li><i class="fa fa-user"></i>holywise</li>
+                                </ul>
+                                <h2 id="構築作業の全景">構築作業の全景</h2>
+
+<p>この一連のポストでは以下の手順で進めていくことになります。</p>
+
+<ol class="task-list">
+<li><input type="checkbox" checked disabled class="task-list-item"> <a href="/2017/01/howto_setup_hyperv_nat_box/">ホスト側に仮想ネットワークアダプタを作成する</a></li>
+<li><input type="checkbox" disabled class="task-list-item"> <strong>ゲスト側にネットワーク設定を行う</strong> (←)</li>
+</ol>
+
+<p><a href="/2017/01/howto_setup_hyperv_nat_box/">前回のポスト</a>では前半の手順を終えました。
+当ポストでは後半の手順を示します。</p>
+
+
+<figure >
+    
+        <img src="/image/HyperV_NAT_and_HostOnly.png" alt="Network構成図" />
+    
+    
+    <figcaption>
+        <p>
+        ネットワーク構成図
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<p></p>
+                                
+                                <div>
+                                  <a class="btn btn-custom" href="https://holywise.github.io/2017/01/howto_config_hyperv_nat_box/" role="button">Read More</a>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    
+                        <div class="row">
+                            <div class="col-md-12 content-card">
+                                <h1><a href="https://holywise.github.io/2017/01/howto_setup_hyperv_nat_box/">Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (1/2)</a></h1>
+                                <ul class="list-inline">
+                                    <li><i class="fa fa-calendar"></i>2017-01-18</li>
+                                    <li><i class="fa fa-user"></i>holywise</li>
+                                </ul>
+                                <h2 id="目的とゴール">目的とゴール</h2>
+
+<p>Windows10 Pro では Client Hyper-V と呼ばれる仮想マシン環境を構築することができます。</p>
+
+<p>この一連のポストは、Windows10 Pro をホストとした Hyper-V による CentOS7 の仮想マシンを、
+ウェブアプリ等のローカル開発環境とするためのネットワーク環境を整える手順をステップバイステップで示すことを目的とします。</p>
+
+<p>このポストで紹介する手順に沿ってネットワーク環境を構築することで</p>
+
+<ul>
+<li>ゲストの CentOS 環境へはホストとなる Windows10 からしかアクセスできないようにしたい</li>
+<li>ゲストの CentOS 環境の中からは自由に外部（インターネット）へアクセスしたい（yum install 等のため）</li>
+</ul>
+
+<p>という要求を満たすことができるようになります。</p>
+
+<h2 id="構築を行う環境および前提条件">構築を行う環境および前提条件</h2>
+
+<ul>
+<li>ホストOS : Windows10 Pro バージョン 1511 ビルド 10586 以降</li>
+<li>ホストOSで Hyper-V が有効化済みであること</li>
+<li>ゲストOS : CentOS 7</li>
+</ul>
+
+<p>各種設定の操作は主に PowerShell を利用します。</p>
+
+<p></p>
+                                
+                                <div>
+                                  <a class="btn btn-custom" href="https://holywise.github.io/2017/01/howto_setup_hyperv_nat_box/" role="button">Read More</a>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    
+                        <div class="row">
+                            <div class="col-md-12 content-card">
                                 <h1><a href="https://holywise.github.io/2017/01/how_to_push_hugo_site/">HUGOで静的ページサイトを構築する (3/3)</a></h1>
                                 <ul class="list-inline">
                                     <li><i class="fa fa-calendar"></i>2017-01-15</li>
@@ -187,6 +275,10 @@ Windows / Mac OS / Linux 等さまざまな環境上で動作します。
     <div class="col-md-11 col-md-offset-1 card">
         <h5>Recent Posts</h5>
         <ul class="list-unstyled posts-recent">
+            
+                <li><a href="https://holywise.github.io/2017/01/howto_config_hyperv_nat_box/">Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (2/2)</a></li>
+            
+                <li><a href="https://holywise.github.io/2017/01/howto_setup_hyperv_nat_box/">Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (1/2)</a></li>
             
                 <li><a href="https://holywise.github.io/2017/01/how_to_push_hugo_site/">HUGOで静的ページサイトを構築する (3/3)</a></li>
             

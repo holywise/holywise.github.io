@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+    <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.18" />
+    <title>Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (1/2)</title>
+    
+    
+    
+    <meta name="description" content="Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築するまでの手順" />
+    <meta name="keywords" content='Windows,Hyper-V,CentOS' />
+    
+        <meta name="author" content="holywise" />
+    
+    
+    <link href="" rel="alternate" type="application/rss+xml" title="Holywise Tech Notes" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/highlightjs-themes/darcula.css" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/phlat.css" />
+    <link rel="stylesheet" href="https://holywise.github.io/css/custom.css" />
+    
+        
+    
+</head>
+
+    <body>
+        <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Holywise Tech Notes</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            Home
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/about/">
+                            About
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+        <div id="top" class="container">
+            <div class="row" id="content-main">
+                <div class="col-md-8">
+                    <div class="row">
+    <div class="col-md-12 content-card shadow-card">
+        <h1>Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (1/2)</h1>
+        
+            
+            <ul class="list-inline meta">
+                <li><i class="fa fa-calendar"></i>2017-01-18</li>
+                <li><i class="fa fa-user"></i>holywise</li>
+                
+                    
+                    <li><i class="fa fa-folder"></i><a href="https://holywise.github.io/categories/%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89">環境構築</a></li>
+                
+            </ul>
+        
+        
+    <ul class="list-inline share" style="margin-top: 15px; margin-left: 0px">
+        <li class="facebook-share"><a target="_blank" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fholywise.github.io%2f2017%2f01%2fhowto_setup_hyperv_nat_box%2f" rel="nofollow" title="Facebook"><i class="fa fa-facebook fa-lg"></i></a></li>
+        <li class="googleplus-share"><a target="_blank" href="https://plus.google.com/share?url=https%3a%2f%2fholywise.github.io%2f2017%2f01%2fhowto_setup_hyperv_nat_box%2f" rel="nofollow" title="Google+"><i class="fa fa-google-plus fa-lg"></i></a></li>
+        <li class="twitter-share"><a target="_blank" href="https://twitter.com/share?url=https%3a%2f%2fholywise.github.io%2f2017%2f01%2fhowto_setup_hyperv_nat_box%2f&amp;text=Windows10%20Client%20Hyper-V%20%e3%81%ab%e3%81%a6%20CentOS7%20box%20%e3%81%ab%20NAT%20%e7%92%b0%e5%a2%83%e3%82%92%e6%a7%8b%e7%af%89%e3%81%99%e3%82%8b%20%281%2f2%29" rel="nofollow" title="Twitter"><i class="fa fa-twitter fa-lg"></i></a></li>
+        <li class="reddit-share"><a target="_blank" href="http://reddit.com/submit?url=https%3a%2f%2fholywise.github.io%2f2017%2f01%2fhowto_setup_hyperv_nat_box%2f&amp;title=Windows10%20Client%20Hyper-V%20%e3%81%ab%e3%81%a6%20CentOS7%20box%20%e3%81%ab%20NAT%20%e7%92%b0%e5%a2%83%e3%82%92%e6%a7%8b%e7%af%89%e3%81%99%e3%82%8b%20%281%2f2%29" rel="nofollow" title="reddit"><i class="fa fa-reddit fa-lg"></i></a></li>
+        <li class="linkedin-share"><a target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fholywise.github.io%2f2017%2f01%2fhowto_setup_hyperv_nat_box%2f" rel="nofollow" title="LinkedIn"><i class="fa fa-linkedin fa-lg"></i></a></li>
+        <li class="hatena-share"><a target="_blank" href="http://b.hatena.ne.jp/add?mode=confirm&amp;url=https%3a%2f%2fholywise.github.io%2f2017%2f01%2fhowto_setup_hyperv_nat_box%2f&amp;title=Windows10%20Client%20Hyper-V%20%e3%81%ab%e3%81%a6%20CentOS7%20box%20%e3%81%ab%20NAT%20%e7%92%b0%e5%a2%83%e3%82%92%e6%a7%8b%e7%af%89%e3%81%99%e3%82%8b%20%281%2f2%29" rel="nofollow" title="はてなブックマーク"><i class="fa fa-hatena fa-lg"></i></a></li>
+    </ul>
+
+
+        <h2 id="目的とゴール">目的とゴール</h2>
+
+<p>Windows10 Pro では Client Hyper-V と呼ばれる仮想マシン環境を構築することができます。</p>
+
+<p>この一連のポストは、Windows10 Pro をホストとした Hyper-V による CentOS7 の仮想マシンを、
+ウェブアプリ等のローカル開発環境とするためのネットワーク環境を整える手順をステップバイステップで示すことを目的とします。</p>
+
+<p>このポストで紹介する手順に沿ってネットワーク環境を構築することで</p>
+
+<ul>
+<li>ゲストの CentOS 環境へはホストとなる Windows10 からしかアクセスできないようにしたい</li>
+<li>ゲストの CentOS 環境の中からは自由に外部（インターネット）へアクセスしたい（yum install 等のため）</li>
+</ul>
+
+<p>という要求を満たすことができるようになります。</p>
+
+<h2 id="構築を行う環境および前提条件">構築を行う環境および前提条件</h2>
+
+<ul>
+<li>ホストOS : Windows10 Pro バージョン 1511 ビルド 10586 以降</li>
+<li>ホストOSで Hyper-V が有効化済みであること</li>
+<li>ゲストOS : CentOS 7</li>
+</ul>
+
+<p>各種設定の操作は主に PowerShell を利用します。</p>
+
+<p></p>
+
+<h2 id="実装の方針">実装の方針</h2>
+
+<ol>
+<li>ホストPCの中に仮想ネットワークアダプタを２つ作り、１つはホストオンリー接続用とし、もう１つはNAPT接続用とする。</li>
+<li>ゲスト側にもホストオンリーアダプタへの接続用とNATアダプタ接続用の2つのネットワークインターフェースを設定する。</li>
+<li>NAPT接続用のアダプタにはNATオブジェクトの割り当てを行い、NAT用ネットワークとして振る舞えるようにする。</li>
+<li>NAPT接続用アダプタはホストPCの物理NICを経由して、インターネットへの接続を可能となる。</li>
+</ol>
+
+
+<figure >
+    
+        <img src="/image/HyperV_NAT_and_HostOnly.png" alt="Network構成図" />
+    
+    
+    <figcaption>
+        <p>
+        ネットワーク構成図
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<p>以降の手順で、上図のようなネットワーク環境を構築していきます。</p>
+
+<h2 id="構築作業の全景">構築作業の全景</h2>
+
+<p>この一連のポストでは以下の手順で進めていくことになります。</p>
+
+<ol class="task-list">
+<li><input type="checkbox" disabled class="task-list-item"> <strong>ホスト側に仮想ネットワークアダプタを作成する</strong> (←)</li>
+<li><input type="checkbox" disabled class="task-list-item"> <a href="/2017/01/howto_config_hyperv_nat_box/">ゲスト側にネットワーク設定を行う</a></li>
+</ol>
+
+<p>当ポストでは前半の手順を示します。</p>
+
+<h2 id="構築の手順">構築の手順</h2>
+
+<h3 id="ホスト側でホストオンリー用仮想ネットワークアダプタを作成する">ホスト側でホストオンリー用仮想ネットワークアダプタを作成する</h3>
+
+<p>ネットワークアダプタは Hyper-V マネージャーから GUI で操作していく方法と、
+PowerShell から CUI で操作する方法の、いずれかで作成できます。</p>
+
+<p>ここでは CUI から作成する方法で示していきます。</p>
+
+<p>まず<strong>管理者権限</strong>で PowerShell コンソールを開きます。
+次の <kbd>New-VMswitch</kbd> コマンドを実行して、内部用仮想ネットワークアダプタを作成します。
+これは Hyper-V マネージャで言えば、新規の内部仮想スイッチを作成したことに該当します。</p>
+
+<pre><code class="language-powershell">PS C:\WINDOWS\system32&gt; New-VMswitch -SwitchName &quot;HostOnly&quot; -SwitchType Internal
+</code></pre>
+
+<p><kbd>Get-NetAdapter</kbd> コマンドでネットワークアダプタ一覧を表示させます。
+ここで今作成した <code>HostOnly</code> の ifIndex の値をメモしておいてください。
+次の例では「20」となっています。</p>
+
+<pre><code class="language-powershell">PS C:\WINDOWS\system32&gt; Get-NetAdapter
+
+Name                      InterfaceDescription                    ifIndex Status       MacAddress             LinkSpeed
+----                      --------------------                    ------- ------       ----------             ---------
+Wi-Fi                     Qualcomm Atheros AR9485 Wireless Net...      19 Disconnected 48-**-**-**-**-F4          0 bps
+vEthernet (HostOnly)      Hyper-V Virtual Ethernet Adapter             20 Up           00-**-**-**-**-00        10 Gbps
+イーサネット               Realtek PCIe GBE Family Controller           14 Up           D8-**-**-**-**-CF       100 Mbps
+</code></pre>
+
+<p><kbd>New-NetIPAddress</kbd> コマンドで、この <code>HostOnly</code> ネットワークアダプタに対する IP アドレスを設定します。
+ここの例では <code>192.168.10.1/24</code> を割り当てています。
+また <code>-InterfaceIndex</code> オプションで先ほどメモした ifIndex の値を指定しています。</p>
+
+<pre><code class="language-powershell">PS C:\WINDOWS\system32&gt; New-NetIPAddress -IPAddress 192.168.10.1 -PrefixLength 24 -InterfaceIndex 20
+
+IPAddress         : 192.168.10.1
+InterfaceIndex    : 20
+InterfaceAlias    : vEthernet (HostOnly)
+AddressFamily     : IPv4
+Type              : Unicast
+PrefixLength      : 24
+PrefixOrigin      : Manual
+SuffixOrigin      : Manual
+AddressState      : Tentative
+ValidLifetime     : Infinite ([TimeSpan]::MaxValue)
+PreferredLifetime : Infinite ([TimeSpan]::MaxValue)
+SkipAsSource      : False
+PolicyStore       : ActiveStore
+
+IPAddress         : 192.168.10.1
+InterfaceIndex    : 20
+InterfaceAlias    : vEthernet (HostOnly)
+AddressFamily     : IPv4
+Type              : Unicast
+PrefixLength      : 24
+PrefixOrigin      : Manual
+SuffixOrigin      : Manual
+AddressState      : Invalid
+ValidLifetime     : Infinite ([TimeSpan]::MaxValue)
+PreferredLifetime : Infinite ([TimeSpan]::MaxValue)
+SkipAsSource      : False
+PolicyStore       : PersistentStore
+</code></pre>
+
+<p>デフォルトゲートウェイやDNSの設定は特に必要ありません。</p>
+
+<h3 id="ホスト側でnapt用仮想ネットワークアダプタを作成する">ホスト側でNAPT用仮想ネットワークアダプタを作成する</h3>
+
+<p>こちらはNAPT用であるため、前項で示した手順に加えて物理NICへのNAT接続設定が必要となります。</p>
+
+<h4 id="内部用仮想ネットワークアダプタを作成する">内部用仮想ネットワークアダプタを作成する</h4>
+
+<p>まず前項と同様の手順でNAPT用の仮想ネットワークアダプタを作成します。
+<code>HostOnly</code> と同様に内部用の仮想ネットワークアダプタを作成することになります。</p>
+
+<pre><code class="language-powershell">PS C:\WINDOWS\system32&gt; New-VMswitch -SwitchName &quot;NAPT&quot; -SwitchType Internal
+PS C:\WINDOWS\system32&gt; Get-NetAdapter
+
+Name                      InterfaceDescription                    ifIndex Status       MacAddress             LinkSpeed
+----                      --------------------                    ------- ------       ----------             ---------
+Wi-Fi                     Qualcomm Atheros AR9485 Wireless Net...      19 Disconnected 48-**-**-**-**-F4          0 bps
+vEthernet (NAPT)          Hyper-V Virtual Ethernet Adapter #2          12 Up           00-**-**-**-**-01        10 Gbps
+vEthernet (HostOnly)      Hyper-V Virtual Ethernet Adapter             20 Up           00-**-**-**-**-00        10 Gbps
+イーサネット               Realtek PCIe GBE Family Controller           14 Up           D8-**-**-**-**-CF       100 Mbps
+</code></pre>
+
+<p>やはり同様にこのネットワークアダプタにIPアドレスを割り当てます。
+ここの例では <code>10.0.1.1/24</code> を割り当てています。</p>
+
+<pre><code class="language-powershell">PS C:\WINDOWS\system32&gt; New-NetIPAddress -IPAddress 10.0.1.1 -PrefixLength 24 -InterfaceIndex 12
+
+IPAddress         : 10.0.1.1
+InterfaceIndex    : 12
+InterfaceAlias    : vEthernet (NAPT)
+AddressFamily     : IPv4
+Type              : Unicast
+PrefixLength      : 24
+PrefixOrigin      : Manual
+SuffixOrigin      : Manual
+AddressState      : Tentative
+ValidLifetime     : Infinite ([TimeSpan]::MaxValue)
+PreferredLifetime : Infinite ([TimeSpan]::MaxValue)
+SkipAsSource      : False
+PolicyStore       : ActiveStore
+
+IPAddress         : 10.0.1.1
+InterfaceIndex    : 12
+InterfaceAlias    : vEthernet (NAPT)
+AddressFamily     : IPv4
+Type              : Unicast
+PrefixLength      : 24
+PrefixOrigin      : Manual
+SuffixOrigin      : Manual
+AddressState      : Invalid
+ValidLifetime     : Infinite ([TimeSpan]::MaxValue)
+PreferredLifetime : Infinite ([TimeSpan]::MaxValue)
+SkipAsSource      : False
+PolicyStore       : PersistentStore
+</code></pre>
+
+<h4 id="napt用仮想ネットワークアダプタにnatオブジェクトを割り当てる">NAPT用仮想ネットワークアダプタにNATオブジェクトを割り当てる</h4>
+
+<p><a href="https://technet.microsoft.com/en-us/library/dn283361.aspx">New-NetNat</a> コマンドによって
+内部ネットワークアダプタに対して NAPT 機能を割り当てることができます。</p>
+
+<pre><code class="language-powershell">PS C:\WINDOWS\system32&gt; New-NetNat -Name &quot;MyNAPT&quot; -InternalIPInterfaceAddressPrefix 10.0.1.0/24
+
+Name                             : MyNAPT
+ExternalIPInterfaceAddressPrefix :
+InternalIPInterfaceAddressPrefix : 10.0.1.0/24
+IcmpQueryTimeout                 : 30
+TcpEstablishedConnectionTimeout  : 1800
+TcpTransientConnectionTimeout    : 120
+TcpFilteringBehavior             : AddressDependentFiltering
+UdpFilteringBehavior             : AddressDependentFiltering
+UdpIdleSessionTimeout            : 120
+UdpInboundRefresh                : False
+Store                            : Local
+Active                           : True
+</code></pre>
+
+<p>なお <code>-InternalIPInterfaceAddressPrefix</code> オプションにはネットワークアドレス（10.0.1.<strong>0</strong>）が指定されていることに注意してください。</p>
+
+<p>この設定により、<code>10.0.1.0/24</code> に属する内部ネットワークから NAPT によるネットワークアドレス・ポート変換が働くようになり、
+この <code>10.0.1.0/24</code> ネットワーク空間の中からは、
+先ほどこの仮想ネットワークアダプタに設定した <code>10.0.1.1</code> がゲートウェイとしての働きを持つようになります。
+またこのゲートウェイアドレス <code>10.0.1.1</code> とホストPCの物理NICとの接続設定は明示的に行う必要はなく、自動的に接続されるようになります。</p>
+
+<dl>
+<dt>参考</dt>
+<dd><a href="https://docs.microsoft.com/ja-jp/virtualization/hyper-v-on-windows/user-guide/setup-nat-network">Set up a NAT network</a> (docs.microsoft.com)</dd>
+</dl>
+
+<h3 id="ここまでの確認">ここまでの確認</h3>
+
+<p><kbd>Get-NetConnectionProfile</kbd> コマンドで、各ネットワークアダプタのプロファイルを知ることができます。</p>
+
+<pre><code class="language-powershell">PS C:\Windows\system32&gt; Get-NetConnectionProfile
+
+Name             : *****************
+InterfaceAlias   : イーサネット
+InterfaceIndex   : 14
+NetworkCategory  : Private
+IPv4Connectivity : Internet
+IPv6Connectivity : LocalNetwork
+
+Name             : 識別されていないネットワーク
+InterfaceAlias   : vEthernet (HostOnly)
+InterfaceIndex   : 20
+NetworkCategory  : Public
+IPv4Connectivity : NoTraffic
+IPv6Connectivity : NoTraffic
+
+Name             : 識別されていないネットワーク
+InterfaceAlias   : vEthernet (NAPT)
+InterfaceIndex   : 12
+NetworkCategory  : Public
+IPv4Connectivity : NoTraffic
+IPv6Connectivity : NoTraffic
+</code></pre>
+
+<p><code>HostOnly</code> および <code>NAPT</code> のいずれも「パブリックネットワーク」と扱われており、
+「識別されていないネットワーク」になっていますが、
+これはどちらのネットワークアダプタにもデフォルトゲートウェイ等の設定を行っていないためであり、
+これで正常な状態です。</p>
+
+<p>気になるようであれば <kbd>Set-NetConnectionProfile</kbd> コマンドでこれらをプライベートネットワークにすることもできます。</p>
+
+<pre><code class="language-powershell">PS C:\WINDOWS\system32&gt; Set-NetConnectionProfile -Name &quot;識別されていないネットワーク&quot; -NetworkCategory Private
+</code></pre>
+
+<p>ただし、この設定はホストPCを再起動するまでしか有効ではありません。
+ホストPCを再起動すると、またパブリックネットワーク状態に戻ってしまいます。</p>
+
+<p>また <code>HostOnly</code> と <code>NAPT</code> のどちらかだけをプライベートにする、ということもできません。
+たとえ</p>
+
+<pre><code class="language-powershell">PS C:\WINDOWS\system32&gt; Set-NetConnectionProfile -InterfaceIndex 12 -NetworkCategory Private
+</code></pre>
+
+<p>のように <code>InterfaceIndex</code> を特定して設定したとしても、両方同時にプライベートネットワークになります。</p>
+
+<p>パブリックネットワークに対しては Windows のファイアーウォールがデフォルトで厳しめの制限をかけているため、
+ゲストの仮想マシンとホストPCとの間の通信ができないことがあります。
+その場合は上記の方法でプライベートネットワークとして扱うか、
+あるいは次のポストで説明するようにファイアーウォールのルールを修正するか、いずれかの対応が必要となります。</p>
+
+<p><a href="/2017/01/howto_config_hyperv_nat_box/">Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (<sup>2</sup>&frasl;<sub>2</sub>)</a> に続きます。</p>
+        
+    <ul class="list-inline tags" style="margin-top: 15px; margin-left: 0px">
+        
+            <li style=""><a href="https://holywise.github.io/tags/windows">Windows</a></li>
+        
+            <li style=""><a href="https://holywise.github.io/tags/hyper-v">Hyper-V</a></li>
+        
+            <li style=""><a href="https://holywise.github.io/tags/centos">CentOS</a></li>
+        
+    </ul>
+
+
+    </div>
+</div>
+
+                    
+    
+
+
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+    <div class="col-md-11 col-md-offset-1 card">
+        <h5>Search</h5>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form">
+            <div class="input-group">
+                <input class="form-control" type="search" name="q" />
+                <span class="input-group-btn">
+                    <button class="btn btn-custom" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                </span>
+            </div>
+            <input type="hidden" name="q" value="site:https://holywise.github.io/">
+        </form>
+    </div>
+</div>
+
+                    <div class="row">
+    <div class="col-md-11 col-md-offset-1 card">
+        <h5>Recent Posts</h5>
+        <ul class="list-unstyled posts-recent">
+            
+                <li><a href="https://holywise.github.io/2017/01/howto_config_hyperv_nat_box/">Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (2/2)</a></li>
+            
+                <li><a href="https://holywise.github.io/2017/01/howto_setup_hyperv_nat_box/">Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (1/2)</a></li>
+            
+                <li><a href="https://holywise.github.io/2017/01/how_to_push_hugo_site/">HUGOで静的ページサイトを構築する (3/3)</a></li>
+            
+                <li><a href="https://holywise.github.io/2016/12/how_to_add_pages_hugo_site/">HUGOで静的ページサイトを構築する (2/3)</a></li>
+            
+                <li><a href="https://holywise.github.io/2016/12/how_to_setup_hugo_site/">HUGOで静的ページサイトを構築する (1/3)</a></li>
+            
+        </ul>
+    </div>
+</div>
+
+                    
+    
+        <div class="row">
+            <div class="col-md-11 col-md-offset-1 card">
+                <h5>categories</h5>
+                <ul class="list-unstyled posts-recent">
+                    
+                        <li><a href="https://holywise.github.io/categories/%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89">環境構築</a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    
+
+    
+
+
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-xs-6">
+    <ul class="list-inline links">
+        
+    </ul>
+</div>
+
+            <div class="col-md-4 col-xs-6">
+    <ul class="list-inline social-media">
+        
+        
+        
+        
+            <li><a target="_blank" href="https://github.com/holywise"><i class="fa fa-github fa-lg"></i></a></li>
+        
+        
+            <li><a target="_blank" href="https://ja.stackoverflow.com/users/10492/holywise"><i class="fa fa-stack-overflow fa-lg"></i></a></li>
+        
+        
+        
+        
+        
+        
+        
+        
+            <li><a target="_blank" href="mailto:holywise@gmail.com"><i class="fa fa-envelope fa-lg"></i></a></li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p>
+                    <a href="https://github.com/nraboy/hugo-phlat-theme">Phlat Theme</a> designed and built by <a href="http://www.nraboy.com">Nic Raboy</a> in San Francisco, California.
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        <div id="back-to-top" class="hidden">
+    <a href="#top" class="well well-sm" onclick="$('html,body').animate({scrollTop:0},'slow');return false;">
+        <i class="glyphicon glyphicon-chevron-up"></i> Back to Top
+    </a>
+</div>
+<script src="https://holywise.github.io/js/jquery-2.2.1.min.js"></script>
+<script src="https://holywise.github.io/js/bootstrap.min.js"></script>
+<script src="https://holywise.github.io/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>
+    if(($(window).height() + 100) < $(document).height()) {
+        $('#back-to-top').removeClass('hidden').affix({
+            offset: {
+                top: 100
+            }
+        });
+    }
+</script>
+
+    
+
+
+    
+
+
+
+    </body>
+</html>

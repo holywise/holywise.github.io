@@ -6,8 +6,764 @@
     <description>Recent content in Posts on Holywise Tech Notes</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Sun, 15 Jan 2017 21:26:28 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 18 Jan 2017 22:58:50 +0900</lastBuildDate>
     <atom:link href="https://holywise.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (2/2)</title>
+      <link>https://holywise.github.io/2017/01/howto_config_hyperv_nat_box/</link>
+      <pubDate>Wed, 18 Jan 2017 22:58:50 +0900</pubDate>
+      
+      <guid>https://holywise.github.io/2017/01/howto_config_hyperv_nat_box/</guid>
+      <description>&lt;h2 id=&#34;構築作業の全景&#34;&gt;構築作業の全景&lt;/h2&gt;
+
+&lt;p&gt;この一連のポストでは以下の手順で進めていくことになります。&lt;/p&gt;
+
+&lt;ol class=&#34;task-list&#34;&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; checked disabled class=&#34;task-list-item&#34;&gt; &lt;a href=&#34;https://holywise.github.io/2017/01/howto_setup_hyperv_nat_box/&#34;&gt;ホスト側に仮想ネットワークアダプタを作成する&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;strong&gt;ゲスト側にネットワーク設定を行う&lt;/strong&gt; (←)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://holywise.github.io/2017/01/howto_setup_hyperv_nat_box/&#34;&gt;前回のポスト&lt;/a&gt;では前半の手順を終えました。
+当ポストでは後半の手順を示します。&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://holywise.github.io/image/HyperV_NAT_and_HostOnly.png&#34; alt=&#34;Network構成図&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        ネットワーク構成図
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;ゲスト用の-hyper-v-box-を作成する&#34;&gt;ゲスト用の Hyper-V box を作成する&lt;/h2&gt;
+
+&lt;p&gt;Hyper-V マネージャー を起動し、新規仮想マシンを作成します。
+その際に、仮想マシンにはネットワークアダプタを２つ作成し、
+一方には仮想スイッチに &lt;code&gt;NAPT&lt;/code&gt; が、もう一方には仮想スイッチに &lt;code&gt;HostOnly&lt;/code&gt; が接続されるようにしておきます。&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://holywise.github.io/image/HyperV_create_wizard.png&#34; alt=&#34;Hyper-V 仮想マシンの新規作成ウィザード&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        新規作成ウィザードのネットワーク構成画面
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://holywise.github.io/image/HyperV_machine_property.png&#34; alt=&#34;Hyper-V 仮想マシンのプロパティ&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        仮想マシンのプロパティ画面
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;h2 id=&#34;ゲストosをインストールし-ネットワーク設定を行う&#34;&gt;ゲストOSをインストールし、ネットワーク設定を行う&lt;/h2&gt;
+
+&lt;p&gt;CentOS7 のインストール自体は、インストーラーウィザードが指定する手順どおりに行います。
+その際に「ネットワークとホスト名」の設定で &lt;code&gt;NAPT&lt;/code&gt; および &lt;code&gt;HostOnly&lt;/code&gt; の仮想スイッチに繋がっている
+２つの「イーサネット」について、それぞれ次のように設定します。&lt;/p&gt;
+
+&lt;h3 id=&#34;napt&#34;&gt;NAPT&lt;/h3&gt;
+
+&lt;h4 id=&#34;ipv4のセッティング&#34;&gt;IPv4のセッティング&lt;/h4&gt;
+
+&lt;table class=&#34;table table-striped&#34;&gt;
+  &lt;tr&gt;
+    &lt;th style=&#34;width: 8em;&#34;&gt;項目&lt;/th&gt;
+    &lt;th&gt;値&lt;/th&gt;
+    &lt;th&gt;備考&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;方式&lt;/td&gt;
+    &lt;td&gt;手動&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;アドレス&lt;/td&gt;
+    &lt;td&gt;10.0.1.100&lt;/td&gt;
+    &lt;td&gt;NAPT用仮想スイッチに &lt;kbd&gt;New-NetNat&lt;/kbd&gt; で割り当てた 10.0.1.0/24 に属する任意のもの&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;ネットマスク&lt;/td&gt;
+    &lt;td&gt;255.255.255.0&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;ゲートウェイ&lt;/td&gt;
+    &lt;td&gt;10.0.1.1&lt;/td&gt;
+    &lt;td&gt;NAPT用仮想スイッチに &lt;kbd&gt;New-NetIPAddress&lt;/kbd&gt; で割り当てたIPアドレスを指定&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;DNSサーバー&lt;/td&gt;
+    &lt;td&gt;192.168.1.1&lt;/td&gt;
+    &lt;td&gt;ホストPCが物理NICから参照しているDNSサーバーを指定&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&#34;hostonly&#34;&gt;HostOnly&lt;/h3&gt;
+
+&lt;h4 id=&#34;ipv4のセッティング-1&#34;&gt;IPv4のセッティング&lt;/h4&gt;
+
+&lt;table class=&#34;table table-striped&#34;&gt;
+  &lt;tr&gt;
+    &lt;th style=&#34;width: 8em;&#34;&gt;項目&lt;/th&gt;
+    &lt;th&gt;値&lt;/th&gt;
+    &lt;th&gt;備考&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;方式&lt;/td&gt;
+    &lt;td&gt;手動&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;アドレス&lt;/td&gt;
+    &lt;td&gt;192.168.10.100&lt;/td&gt;
+    &lt;td&gt;ホストオンリー用仮想スイッチに &lt;kbd&gt;New-NetIPAddress&lt;/kbd&gt; で割り当てた 192.168.10.1/24 と同じ空間に属する任意のもの&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;ネットマスク&lt;/td&gt;
+    &lt;td&gt;255.255.255.0&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;ゲートウェイ&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;空欄のまま&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;DNSサーバー&lt;/td&gt;
+    &lt;td&gt;&lt;/td&gt;
+    &lt;td&gt;空欄のまま&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&#34;設定の確認&#34;&gt;設定の確認&lt;/h3&gt;
+
+&lt;p&gt;インストール終了後、ゲストOSにログインしてネットワーク設定の確認を行います。
+CentOS7 の場合は &lt;kbd&gt;ip route&lt;/kbd&gt; を使用します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;$ ip route
+default via 10.0.1.1 dev eth0  proto static  metric 100
+10.0.1.0/24 dev eth0  proto kernel  scope link  src 10.0.1.100  metric 100
+192.168.10.0/24 dev eth1  proto kernel  scope link  src 192.168.10.100  metric 100
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上記のように &lt;code&gt;default&lt;/code&gt; ルートが &lt;code&gt;10.0.1.1&lt;/code&gt; (「NAPT IPv4のセッティング」で指定したゲートウェイ) に向いていることを確認してください。
+その後 &lt;kbd&gt;ping -c3 www.google.com&lt;/kbd&gt; などとして、外部ネットワークへの到達性をチェックすると良いでしょう。&lt;/p&gt;
+
+&lt;p&gt;なお標準状態では仮想マシンからホストPCへの ping はWindowsファイアーウォールにブロックされてしまいます。
+そのため &lt;kbd&gt;ping 192.168.10.1&lt;/kbd&gt; などとしても 100% paket loss となりますが、それで正常です。&lt;/p&gt;
+
+&lt;p&gt;仮想マシンからホストPCへの ping の到達性を確認したい場合は、
+「セキュリティが強化されたWindowsファイアウォール」
+（&lt;kbd&gt;&lt;kbd&gt;Win&lt;/kbd&gt; + &lt;kbd&gt;R&lt;/kbd&gt;&lt;/kbd&gt;で開くダイアログから&lt;kbd&gt;wf.msc&lt;/kbd&gt;で起動）
+から「受信の規則」→「仮想マシンの監視（エコー要求 - ICMPv4受信）」の「規則を有効化」してください。&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://holywise.github.io/image/windows_firewall_icmp.png&#34; alt=&#34;セキュリティが強化されたWindowsファイアウォール&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        仮想マシンの監視ルールの有効化
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;なおこのルールはプライベート・パブリック・ドメインのすべてのネットワークプロファイルに対して icmp 受信を開放するものなので、
+到達性の確認ができた時点で再度無効化しておくことをお勧めします。&lt;/p&gt;
+
+&lt;p&gt;これでゲスト側のネットワーク設定は完了です。&lt;/p&gt;
+
+&lt;h2 id=&#34;任意-開発環境用にwindowsファイアウォールの設定を変更する&#34;&gt;【任意】開発環境用にWindowsファイアウォールの設定を変更する&lt;/h2&gt;
+
+&lt;p&gt;前項までの手順を進めることで、前回のポストで挙げた&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;ゲストの CentOS 環境へはホストとなる Windows10 からしかアクセスできないようにしたい&lt;/li&gt;
+&lt;li&gt;ゲストの CentOS 環境の中からは自由に外部（インターネット）へアクセスしたい&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;という目的自体はすでに達成しています。&lt;/p&gt;
+
+&lt;p&gt;ところでこの仮想マシンをウェブアプリ等の開発環境としたい場合、
+仮想マシンからホストPCへの通信が可能となっていて欲しいことがよくあります。
+例えば仮想マシン上で動作するPHPアプリケーションを &lt;a href=&#34;https://xdebug.org/&#34;&gt;Xdebug&lt;/a&gt; でリモートデバッグしたい、
+などというケースです。&lt;/p&gt;
+
+&lt;p&gt;ところが前回・今回の一連の手順で示したネットワーク構成では、
+「HostOnly」「NAPT」ともに「パブリックネットワーク」として扱われるようになるため、
+標準状態では仮想マシンからホストPCへの接続が厳しく制限されてしまいます。&lt;/p&gt;
+
+&lt;p&gt;ここではホストPCが、仮想マシン上で動作している Xdebug からの接続を受け付けるように、
+Windowsファイアウォールを設定する例を示します。&lt;/p&gt;
+
+&lt;h3 id=&#34;xdebug-から接続されるポート番号を確認する&#34;&gt;Xdebug から接続されるポート番号を確認する&lt;/h3&gt;
+
+&lt;p&gt;仮想マシンの &lt;code&gt;/etc/php.d&lt;/code&gt; 配下に、次のような内容の &lt;code&gt;xdebug.ini&lt;/code&gt; が置かれているケースで考えます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ini&#34;&gt;; Enable xdebug extension module
+zend_extension=/usr/lib64/php/modules/xdebug.so
+
+; see http://xdebug.org/docs/all_settings
+xdebug.remote_enable=1
+xdebug.remote_connect_back=1
+xdebug.remote_port=9000
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;この設定では、仮想マシンからホストPCの9000番ポートへのコールバックが発生することになります。
+つまり仮想マシンからホストPCの9000番ポートが通過できるように設定すれば良いということになります。&lt;/p&gt;
+
+&lt;h3 id=&#34;windowsファイアウォールを設定する&#34;&gt;Windowsファイアウォールを設定する&lt;/h3&gt;
+
+&lt;p&gt;&lt;kbd&gt;&lt;kbd&gt;Win&lt;/kbd&gt; + &lt;kbd&gt;R&lt;/kbd&gt;&lt;/kbd&gt;で開くダイアログから&lt;kbd&gt;wf.msc&lt;/kbd&gt;で
+「セキュリティが強化されたWindowsファイアウォール」を起動します。&lt;/p&gt;
+
+
+&lt;figure class=&#34;origin&#34;&gt;
+    
+        &lt;img src=&#34;https://holywise.github.io/image/run_wf_msc.png&#34; alt=&#34;コマンドを指定して実行&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        コマンドを指定して実行
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;受信の規則から「新しい規則」を選択して「新規の受信の規則ウィザード」に沿って各種設定を行っていきます。&lt;/p&gt;
+
+&lt;h4 id=&#34;規則の種類&#34;&gt;規則の種類&lt;/h4&gt;
+
+&lt;p&gt;作成するファイアウォールの規則の種類を選択します。&lt;/p&gt;
+
+&lt;p&gt;今回は仮想マシン上のプログラムのリモートデバッグを目的としているため、&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;カスタム&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;を選択して、細かく指定をしていきます。&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://holywise.github.io/image/wf_rule_wizard_01.png&#34; alt=&#34;受信の規則ウィザード&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        規則の種類
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;h4 id=&#34;プログラム&#34;&gt;プログラム&lt;/h4&gt;
+
+&lt;p&gt;待ち受けるプログラムを特定しても構いませんが、
+IDEなどはバージョンのアップグレードなどでプログラムの配置位置が変わったりすることと、
+後工程のスコープ指定で対象とするネットワークを限定できるため、&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;すべてのプログラム&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;を選択します。&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://holywise.github.io/image/wf_rule_wizard_02.png&#34; alt=&#34;受信の規則ウィザード&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        プログラム
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;h4 id=&#34;プロトコルとポート&#34;&gt;プロトコルとポート&lt;/h4&gt;
+
+&lt;p&gt;先ほど確認したとおり、Xdebugの待ち受けは9000番ポートとなります。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;プロトコルの種類：&lt;code&gt;TCP&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;ローカルポート：&lt;code&gt;9000&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;リモートポート：&lt;code&gt;すべてのポート&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;を選択します。&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://holywise.github.io/image/wf_rule_wizard_03.png&#34; alt=&#34;受信の規則ウィザード&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        プロトコルとポート
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;h4 id=&#34;スコープ&#34;&gt;スコープ&lt;/h4&gt;
+
+&lt;p&gt;前項までの行程で設定を行った &lt;code&gt;HostOnly&lt;/code&gt; ネットワークからのみ、接続を受け付けるようにします。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;ローカルIPアドレス：&lt;code&gt;192.168.10.1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;リモートIPアドレス：&lt;code&gt;192.168.10.0/24&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;を指定します。&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://holywise.github.io/image/wf_rule_wizard_04.png&#34; alt=&#34;受信の規則ウィザード&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        スコープ
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;h4 id=&#34;操作&#34;&gt;操作&lt;/h4&gt;
+
+&lt;p&gt;パケットを通したいので&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;接続を許可する&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;を選択します。&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://holywise.github.io/image/wf_rule_wizard_05.png&#34; alt=&#34;受信の規則ウィザード&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        操作
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;h4 id=&#34;プロファイル&#34;&gt;プロファイル&lt;/h4&gt;
+
+&lt;p&gt;これまでの手順で設定した &lt;code&gt;HostOnly&lt;/code&gt; ネットワークアダプタは「パブリックネットワーク」として扱われていますので、&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;パブリック&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;を選択します。&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://holywise.github.io/image/wf_rule_wizard_06.png&#34; alt=&#34;受信の規則ウィザード&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        プロファイル
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;h4 id=&#34;名前&#34;&gt;名前&lt;/h4&gt;
+
+&lt;p&gt;最後に規則に任意の名前を付けます。
+ここの例では「Xdebug」としています。&lt;/p&gt;
+
+&lt;p&gt;最後に「完了」をクリックしてください。&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://holywise.github.io/image/wf_rule_wizard_07.png&#34; alt=&#34;受信の規則ウィザード&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        名前
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;以上で、すべてのネットワーク設定が完了しました。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (1/2)</title>
+      <link>https://holywise.github.io/2017/01/howto_setup_hyperv_nat_box/</link>
+      <pubDate>Wed, 18 Jan 2017 22:58:41 +0900</pubDate>
+      
+      <guid>https://holywise.github.io/2017/01/howto_setup_hyperv_nat_box/</guid>
+      <description>&lt;h2 id=&#34;目的とゴール&#34;&gt;目的とゴール&lt;/h2&gt;
+
+&lt;p&gt;Windows10 Pro では Client Hyper-V と呼ばれる仮想マシン環境を構築することができます。&lt;/p&gt;
+
+&lt;p&gt;この一連のポストは、Windows10 Pro をホストとした Hyper-V による CentOS7 の仮想マシンを、
+ウェブアプリ等のローカル開発環境とするためのネットワーク環境を整える手順をステップバイステップで示すことを目的とします。&lt;/p&gt;
+
+&lt;p&gt;このポストで紹介する手順に沿ってネットワーク環境を構築することで&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;ゲストの CentOS 環境へはホストとなる Windows10 からしかアクセスできないようにしたい&lt;/li&gt;
+&lt;li&gt;ゲストの CentOS 環境の中からは自由に外部（インターネット）へアクセスしたい（yum install 等のため）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;という要求を満たすことができるようになります。&lt;/p&gt;
+
+&lt;h2 id=&#34;構築を行う環境および前提条件&#34;&gt;構築を行う環境および前提条件&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;ホストOS : Windows10 Pro バージョン 1511 ビルド 10586 以降&lt;/li&gt;
+&lt;li&gt;ホストOSで Hyper-V が有効化済みであること&lt;/li&gt;
+&lt;li&gt;ゲストOS : CentOS 7&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;各種設定の操作は主に PowerShell を利用します。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;実装の方針&#34;&gt;実装の方針&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;ホストPCの中に仮想ネットワークアダプタを２つ作り、１つはホストオンリー接続用とし、もう１つはNAPT接続用とする。&lt;/li&gt;
+&lt;li&gt;ゲスト側にもホストオンリーアダプタへの接続用とNATアダプタ接続用の2つのネットワークインターフェースを設定する。&lt;/li&gt;
+&lt;li&gt;NAPT接続用のアダプタにはNATオブジェクトの割り当てを行い、NAT用ネットワークとして振る舞えるようにする。&lt;/li&gt;
+&lt;li&gt;NAPT接続用アダプタはホストPCの物理NICを経由して、インターネットへの接続を可能となる。&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://holywise.github.io/image/HyperV_NAT_and_HostOnly.png&#34; alt=&#34;Network構成図&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        ネットワーク構成図
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;以降の手順で、上図のようなネットワーク環境を構築していきます。&lt;/p&gt;
+
+&lt;h2 id=&#34;構築作業の全景&#34;&gt;構築作業の全景&lt;/h2&gt;
+
+&lt;p&gt;この一連のポストでは以下の手順で進めていくことになります。&lt;/p&gt;
+
+&lt;ol class=&#34;task-list&#34;&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;strong&gt;ホスト側に仮想ネットワークアダプタを作成する&lt;/strong&gt; (←)&lt;/li&gt;
+&lt;li&gt;&lt;input type=&#34;checkbox&#34; disabled class=&#34;task-list-item&#34;&gt; &lt;a href=&#34;https://holywise.github.io/2017/01/howto_config_hyperv_nat_box/&#34;&gt;ゲスト側にネットワーク設定を行う&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;当ポストでは前半の手順を示します。&lt;/p&gt;
+
+&lt;h2 id=&#34;構築の手順&#34;&gt;構築の手順&lt;/h2&gt;
+
+&lt;h3 id=&#34;ホスト側でホストオンリー用仮想ネットワークアダプタを作成する&#34;&gt;ホスト側でホストオンリー用仮想ネットワークアダプタを作成する&lt;/h3&gt;
+
+&lt;p&gt;ネットワークアダプタは Hyper-V マネージャーから GUI で操作していく方法と、
+PowerShell から CUI で操作する方法の、いずれかで作成できます。&lt;/p&gt;
+
+&lt;p&gt;ここでは CUI から作成する方法で示していきます。&lt;/p&gt;
+
+&lt;p&gt;まず&lt;strong&gt;管理者権限&lt;/strong&gt;で PowerShell コンソールを開きます。
+次の &lt;kbd&gt;New-VMswitch&lt;/kbd&gt; コマンドを実行して、内部用仮想ネットワークアダプタを作成します。
+これは Hyper-V マネージャで言えば、新規の内部仮想スイッチを作成したことに該当します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;PS C:\WINDOWS\system32&amp;gt; New-VMswitch -SwitchName &amp;quot;HostOnly&amp;quot; -SwitchType Internal
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;kbd&gt;Get-NetAdapter&lt;/kbd&gt; コマンドでネットワークアダプタ一覧を表示させます。
+ここで今作成した &lt;code&gt;HostOnly&lt;/code&gt; の ifIndex の値をメモしておいてください。
+次の例では「20」となっています。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;PS C:\WINDOWS\system32&amp;gt; Get-NetAdapter
+
+Name                      InterfaceDescription                    ifIndex Status       MacAddress             LinkSpeed
+----                      --------------------                    ------- ------       ----------             ---------
+Wi-Fi                     Qualcomm Atheros AR9485 Wireless Net...      19 Disconnected 48-**-**-**-**-F4          0 bps
+vEthernet (HostOnly)      Hyper-V Virtual Ethernet Adapter             20 Up           00-**-**-**-**-00        10 Gbps
+イーサネット               Realtek PCIe GBE Family Controller           14 Up           D8-**-**-**-**-CF       100 Mbps
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;kbd&gt;New-NetIPAddress&lt;/kbd&gt; コマンドで、この &lt;code&gt;HostOnly&lt;/code&gt; ネットワークアダプタに対する IP アドレスを設定します。
+ここの例では &lt;code&gt;192.168.10.1/24&lt;/code&gt; を割り当てています。
+また &lt;code&gt;-InterfaceIndex&lt;/code&gt; オプションで先ほどメモした ifIndex の値を指定しています。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;PS C:\WINDOWS\system32&amp;gt; New-NetIPAddress -IPAddress 192.168.10.1 -PrefixLength 24 -InterfaceIndex 20
+
+IPAddress         : 192.168.10.1
+InterfaceIndex    : 20
+InterfaceAlias    : vEthernet (HostOnly)
+AddressFamily     : IPv4
+Type              : Unicast
+PrefixLength      : 24
+PrefixOrigin      : Manual
+SuffixOrigin      : Manual
+AddressState      : Tentative
+ValidLifetime     : Infinite ([TimeSpan]::MaxValue)
+PreferredLifetime : Infinite ([TimeSpan]::MaxValue)
+SkipAsSource      : False
+PolicyStore       : ActiveStore
+
+IPAddress         : 192.168.10.1
+InterfaceIndex    : 20
+InterfaceAlias    : vEthernet (HostOnly)
+AddressFamily     : IPv4
+Type              : Unicast
+PrefixLength      : 24
+PrefixOrigin      : Manual
+SuffixOrigin      : Manual
+AddressState      : Invalid
+ValidLifetime     : Infinite ([TimeSpan]::MaxValue)
+PreferredLifetime : Infinite ([TimeSpan]::MaxValue)
+SkipAsSource      : False
+PolicyStore       : PersistentStore
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;デフォルトゲートウェイやDNSの設定は特に必要ありません。&lt;/p&gt;
+
+&lt;h3 id=&#34;ホスト側でnapt用仮想ネットワークアダプタを作成する&#34;&gt;ホスト側でNAPT用仮想ネットワークアダプタを作成する&lt;/h3&gt;
+
+&lt;p&gt;こちらはNAPT用であるため、前項で示した手順に加えて物理NICへのNAT接続設定が必要となります。&lt;/p&gt;
+
+&lt;h4 id=&#34;内部用仮想ネットワークアダプタを作成する&#34;&gt;内部用仮想ネットワークアダプタを作成する&lt;/h4&gt;
+
+&lt;p&gt;まず前項と同様の手順でNAPT用の仮想ネットワークアダプタを作成します。
+&lt;code&gt;HostOnly&lt;/code&gt; と同様に内部用の仮想ネットワークアダプタを作成することになります。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;PS C:\WINDOWS\system32&amp;gt; New-VMswitch -SwitchName &amp;quot;NAPT&amp;quot; -SwitchType Internal
+PS C:\WINDOWS\system32&amp;gt; Get-NetAdapter
+
+Name                      InterfaceDescription                    ifIndex Status       MacAddress             LinkSpeed
+----                      --------------------                    ------- ------       ----------             ---------
+Wi-Fi                     Qualcomm Atheros AR9485 Wireless Net...      19 Disconnected 48-**-**-**-**-F4          0 bps
+vEthernet (NAPT)          Hyper-V Virtual Ethernet Adapter #2          12 Up           00-**-**-**-**-01        10 Gbps
+vEthernet (HostOnly)      Hyper-V Virtual Ethernet Adapter             20 Up           00-**-**-**-**-00        10 Gbps
+イーサネット               Realtek PCIe GBE Family Controller           14 Up           D8-**-**-**-**-CF       100 Mbps
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;やはり同様にこのネットワークアダプタにIPアドレスを割り当てます。
+ここの例では &lt;code&gt;10.0.1.1/24&lt;/code&gt; を割り当てています。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;PS C:\WINDOWS\system32&amp;gt; New-NetIPAddress -IPAddress 10.0.1.1 -PrefixLength 24 -InterfaceIndex 12
+
+IPAddress         : 10.0.1.1
+InterfaceIndex    : 12
+InterfaceAlias    : vEthernet (NAPT)
+AddressFamily     : IPv4
+Type              : Unicast
+PrefixLength      : 24
+PrefixOrigin      : Manual
+SuffixOrigin      : Manual
+AddressState      : Tentative
+ValidLifetime     : Infinite ([TimeSpan]::MaxValue)
+PreferredLifetime : Infinite ([TimeSpan]::MaxValue)
+SkipAsSource      : False
+PolicyStore       : ActiveStore
+
+IPAddress         : 10.0.1.1
+InterfaceIndex    : 12
+InterfaceAlias    : vEthernet (NAPT)
+AddressFamily     : IPv4
+Type              : Unicast
+PrefixLength      : 24
+PrefixOrigin      : Manual
+SuffixOrigin      : Manual
+AddressState      : Invalid
+ValidLifetime     : Infinite ([TimeSpan]::MaxValue)
+PreferredLifetime : Infinite ([TimeSpan]::MaxValue)
+SkipAsSource      : False
+PolicyStore       : PersistentStore
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;napt用仮想ネットワークアダプタにnatオブジェクトを割り当てる&#34;&gt;NAPT用仮想ネットワークアダプタにNATオブジェクトを割り当てる&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://technet.microsoft.com/en-us/library/dn283361.aspx&#34;&gt;New-NetNat&lt;/a&gt; コマンドによって
+内部ネットワークアダプタに対して NAPT 機能を割り当てることができます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;PS C:\WINDOWS\system32&amp;gt; New-NetNat -Name &amp;quot;MyNAPT&amp;quot; -InternalIPInterfaceAddressPrefix 10.0.1.0/24
+
+Name                             : MyNAPT
+ExternalIPInterfaceAddressPrefix :
+InternalIPInterfaceAddressPrefix : 10.0.1.0/24
+IcmpQueryTimeout                 : 30
+TcpEstablishedConnectionTimeout  : 1800
+TcpTransientConnectionTimeout    : 120
+TcpFilteringBehavior             : AddressDependentFiltering
+UdpFilteringBehavior             : AddressDependentFiltering
+UdpIdleSessionTimeout            : 120
+UdpInboundRefresh                : False
+Store                            : Local
+Active                           : True
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;なお &lt;code&gt;-InternalIPInterfaceAddressPrefix&lt;/code&gt; オプションにはネットワークアドレス（10.0.1.&lt;strong&gt;0&lt;/strong&gt;）が指定されていることに注意してください。&lt;/p&gt;
+
+&lt;p&gt;この設定により、&lt;code&gt;10.0.1.0/24&lt;/code&gt; に属する内部ネットワークから NAPT によるネットワークアドレス・ポート変換が働くようになり、
+この &lt;code&gt;10.0.1.0/24&lt;/code&gt; ネットワーク空間の中からは、
+先ほどこの仮想ネットワークアダプタに設定した &lt;code&gt;10.0.1.1&lt;/code&gt; がゲートウェイとしての働きを持つようになります。
+またこのゲートウェイアドレス &lt;code&gt;10.0.1.1&lt;/code&gt; とホストPCの物理NICとの接続設定は明示的に行う必要はなく、自動的に接続されるようになります。&lt;/p&gt;
+
+&lt;dl&gt;
+&lt;dt&gt;参考&lt;/dt&gt;
+&lt;dd&gt;&lt;a href=&#34;https://docs.microsoft.com/ja-jp/virtualization/hyper-v-on-windows/user-guide/setup-nat-network&#34;&gt;Set up a NAT network&lt;/a&gt; (docs.microsoft.com)&lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;h3 id=&#34;ここまでの確認&#34;&gt;ここまでの確認&lt;/h3&gt;
+
+&lt;p&gt;&lt;kbd&gt;Get-NetConnectionProfile&lt;/kbd&gt; コマンドで、各ネットワークアダプタのプロファイルを知ることができます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;PS C:\Windows\system32&amp;gt; Get-NetConnectionProfile
+
+Name             : *****************
+InterfaceAlias   : イーサネット
+InterfaceIndex   : 14
+NetworkCategory  : Private
+IPv4Connectivity : Internet
+IPv6Connectivity : LocalNetwork
+
+Name             : 識別されていないネットワーク
+InterfaceAlias   : vEthernet (HostOnly)
+InterfaceIndex   : 20
+NetworkCategory  : Public
+IPv4Connectivity : NoTraffic
+IPv6Connectivity : NoTraffic
+
+Name             : 識別されていないネットワーク
+InterfaceAlias   : vEthernet (NAPT)
+InterfaceIndex   : 12
+NetworkCategory  : Public
+IPv4Connectivity : NoTraffic
+IPv6Connectivity : NoTraffic
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;HostOnly&lt;/code&gt; および &lt;code&gt;NAPT&lt;/code&gt; のいずれも「パブリックネットワーク」と扱われており、
+「識別されていないネットワーク」になっていますが、
+これはどちらのネットワークアダプタにもデフォルトゲートウェイ等の設定を行っていないためであり、
+これで正常な状態です。&lt;/p&gt;
+
+&lt;p&gt;気になるようであれば &lt;kbd&gt;Set-NetConnectionProfile&lt;/kbd&gt; コマンドでこれらをプライベートネットワークにすることもできます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;PS C:\WINDOWS\system32&amp;gt; Set-NetConnectionProfile -Name &amp;quot;識別されていないネットワーク&amp;quot; -NetworkCategory Private
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ただし、この設定はホストPCを再起動するまでしか有効ではありません。
+ホストPCを再起動すると、またパブリックネットワーク状態に戻ってしまいます。&lt;/p&gt;
+
+&lt;p&gt;また &lt;code&gt;HostOnly&lt;/code&gt; と &lt;code&gt;NAPT&lt;/code&gt; のどちらかだけをプライベートにする、ということもできません。
+たとえ&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;PS C:\WINDOWS\system32&amp;gt; Set-NetConnectionProfile -InterfaceIndex 12 -NetworkCategory Private
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;のように &lt;code&gt;InterfaceIndex&lt;/code&gt; を特定して設定したとしても、両方同時にプライベートネットワークになります。&lt;/p&gt;
+
+&lt;p&gt;パブリックネットワークに対しては Windows のファイアーウォールがデフォルトで厳しめの制限をかけているため、
+ゲストの仮想マシンとホストPCとの間の通信ができないことがあります。
+その場合は上記の方法でプライベートネットワークとして扱うか、
+あるいは次のポストで説明するようにファイアーウォールのルールを修正するか、いずれかの対応が必要となります。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://holywise.github.io/2017/01/howto_config_hyperv_nat_box/&#34;&gt;Windows10 Client Hyper-V にて CentOS7 box に NAT 環境を構築する (&lt;sup&gt;2&lt;/sup&gt;&amp;frasl;&lt;sub&gt;2&lt;/sub&gt;)&lt;/a&gt; に続きます。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>HUGOで静的ページサイトを構築する (3/3)</title>
@@ -496,7 +1252,7 @@ Windows / Mac OS / Linux 等さまざまな環境上で動作します。
 
 &lt;h2 id=&#34;構築を行う環境および前提条件&#34;&gt;構築を行う環境および前提条件&lt;/h2&gt;
 
-&lt;p&gt;筆者の開発環境である Windows10 Pro 64bit (Build 1511) に環境を構築していった例で示していきます。
+&lt;p&gt;筆者の開発環境である Windows10 Pro 64bit (バージョン 1511) に環境を構築していった例で示していきます。
 Windwos の特定のバージョンに依存するような処理は行わないので、Windows7 等でも特に問題はないはずです。&lt;/p&gt;
 
 &lt;p&gt;以下のツールがすでにインストールされていることを前提とします。&lt;/p&gt;

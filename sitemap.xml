@@ -2,6 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://holywise.github.io/2017/01/howto_config_hyperv_nat_box/</loc>
+    <lastmod>2017-01-18T22:58:50+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://holywise.github.io/2017/01/howto_setup_hyperv_nat_box/</loc>
+    <lastmod>2017-01-18T22:58:41+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://holywise.github.io/2017/01/how_to_push_hugo_site/</loc>
     <lastmod>2017-01-15T21:26:28+09:00</lastmod>
   </url>
@@ -27,6 +37,12 @@
   </url>
   
   <url>
+    <loc>https://holywise.github.io/tags/centos/</loc>
+    <lastmod>2017-01-18T22:58:50+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://holywise.github.io/tags/github/</loc>
     <lastmod>2017-01-15T21:26:28+09:00</lastmod>
     <priority>0</priority>
@@ -34,13 +50,19 @@
   
   <url>
     <loc>https://holywise.github.io/</loc>
-    <lastmod>2017-01-15T21:26:28+09:00</lastmod>
+    <lastmod>2017-01-18T22:58:50+09:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://holywise.github.io/tags/hugo/</loc>
     <lastmod>2017-01-15T21:26:28+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://holywise.github.io/tags/hyper-v/</loc>
+    <lastmod>2017-01-18T22:58:50+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -52,7 +74,7 @@
   
   <url>
     <loc>https://holywise.github.io/post/</loc>
-    <lastmod>2017-01-15T21:26:28+09:00</lastmod>
+    <lastmod>2017-01-18T22:58:50+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -63,13 +85,13 @@
   
   <url>
     <loc>https://holywise.github.io/tags/windows/</loc>
-    <lastmod>2017-01-15T21:26:28+09:00</lastmod>
+    <lastmod>2017-01-18T22:58:50+09:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://holywise.github.io/categories/%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89/</loc>
-    <lastmod>2017-01-15T21:26:28+09:00</lastmod>
+    <lastmod>2017-01-18T22:58:50+09:00</lastmod>
     <priority>0</priority>
   </url>
   
